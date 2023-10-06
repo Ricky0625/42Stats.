@@ -1,1 +1,1 @@
-# peer-defense-hackathon
+# Peer Defense Hackathon
