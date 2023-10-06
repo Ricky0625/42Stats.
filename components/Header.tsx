@@ -47,7 +47,7 @@ const Header = () => {
           <nav className="flex items-center">
             <Button variant="ghost" size="icon">
               <Link href={`https://github.com/Ricky0625/peer-defense-hackathon`} target="_blank">
-                <Github className="h-[1.2rem] w-[1.2rem] rotate-0 scale-100 transition-all" />
+                <Github className="h-[1.2rem] w-[1.2rem] rotate-0 scale-100 transition-all " />
               </Link>
             </Button>
             <ModeToggle />
