@@ -30,7 +30,7 @@ export default function RootLayout({
           disableTransitionOnChange
         >
           <Header />
-          <div className='flex-1 container'>
+          <div className='flex-1 overflow-y-scroll mb-12'>
             {children}
           </div>
           <Footer />

@@ -10,6 +10,7 @@ import {
   SheetTrigger,
 } from "@/components/ui/sheet"
 import { usePathname } from "next/navigation"
+import CommandBox from "./CommandBox"
 
 const routes = [
   {
@@ -44,7 +45,7 @@ const MainNav = ({
       <Logo />
       <nav className="flex items-center space-x-6 text-sm font-medium">
         {routes.map((route, i) => (
-          <Link key={i} href={route.href} className={`hover:text-foreground/80 text-foreground/60 transition-colors ${pathname === route.href && ` text-accent-foreground`}`}>
+          <Link key={i} href={route.href} className={`hover:text-foreground/80 text-foreground/60 transition-colors ${pathname === route.href && `text-primary font-semibold`}`}>
             {route.label}
           </Link>
         ))}
@@ -81,7 +82,7 @@ const BurgerNav = ({
               <span className="font-bold">42Stats.</span>
             </Link>
             {routes.map((route, i) => (
-              <Link href={route.href} className={`font-medium hover:text-foreground/80 text-foreground/60 ${pathname === route.href && ` text-accent-foreground`}`}>
+              <Link key={i} href={route.href} className={`font-medium hover:text-foreground/80 text-foreground/60 ${pathname === route.href && `text-primary font-semibold`}`}>
                 {route.label}
               </Link>
             ))}
@@ -103,7 +104,9 @@ const Header = () => {
         <MainNav pathname={pathname} />
         <BurgerNav pathname={pathname} />
         <div className="flex flex-1 items-center justify-between space-x-2 md:justify-end">
-          <div className="w-full flex-1 md:w-auto md:flex-none"></div>
+          <div className="w-full flex-1 md:w-auto md:flex-none pl-6">
+            <CommandBox />
+          </div>
           <IconsNav />
         </div>
       </div>
