@@ -3,5 +3,7 @@ export default function BlackholeLayout({
 }: {
   children: React.ReactNode
 }) {
-  return children
+  return (
+    children
+  )
 }

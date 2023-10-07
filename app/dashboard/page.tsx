@@ -1,6 +1,7 @@
 'use client'
 
 import React from "react";
+import Loading from "../loading";
 
 async function getUsers() {
 	const res = await fetch(`/api/blackhole`);
@@ -25,6 +26,6 @@ export default function DashBoard() {
 		console.log(users)
 	}, [users])
 	return (
-		<ul></ul>
+		<Loading />
 	)
 }

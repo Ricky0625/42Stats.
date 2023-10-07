@@ -4,8 +4,8 @@ import * as fs from 'fs';
 
 
 function getBHDays(dateString: string): number {
-  const bhDay = new Date(dateString);
-  const currentDate = new Date();
+  const bhDay: any = new Date(dateString);
+  const currentDate: any = new Date();
   const daysLeft = (bhDay - currentDate) / (1000 * 60 * 60 * 24)
   // console.log(Math.floor(daysLeft))
   return Math.ceil(daysLeft);
@@ -15,7 +15,7 @@ async function fetchBHDays() {
   const accessToken = await getAccessToken()
   let page = 1
   let all42KLLogins: string[] = []
-  let all42KLStudents = await fetch(`https://api.intra.42.fr/v2/campus/34/users?access_token=${accessToken}&page[size]=100&page[number]=${page}&filter[staff?]=false`)
+  let all42KLStudents = await fetch(`https://api.intra.42.fr/v2/campus/34/users?access_token=${accessToken}&page[size]=100&page[number]=${page}&filter[staff?]=false&filter[campus]=34`)
   let resJson: Object[] = await all42KLStudents.json()
   
   while (resJson.length !== 0) {
@@ -24,7 +24,7 @@ async function fetchBHDays() {
     });
 
     page++;
-    all42KLStudents = await fetch(`https://api.intra.42.fr/v2/campus/34/users?access_token=${accessToken}&page[size]=100&page[number]=${page}&filter[staff?]=false`);
+    all42KLStudents = await fetch(`https://api.intra.42.fr/v2/campus/34/users?access_token=${accessToken}&page[size]=100&page[number]=${page}&filter[staff?]=false&filter[campus]=34`);
     resJson = await all42KLStudents.json()
   }
 
@@ -109,9 +109,9 @@ export async function GET(
 ) {
 
   const allBHDays = await getAllBHDays();
-  const inDanger = allBHDays.filter(((user: User) => {
-    return user.bhDays < 6 && user.bhDays >= 0
-  }))
+  // const inDanger = allBHDays.filter(((user: User) => {
+  //   return user.bhDays < 6 && user.bhDays >= 0
+  // }))
 
-  return NextResponse.json(inDanger, { status: 200 });
+  return NextResponse.json(allBHDays, { status: 200 });
 }
