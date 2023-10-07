@@ -9,27 +9,30 @@ import {
 
 const CardDiv = ({
   title,
+  icon,
   description,
   content,
   footer,
 }: {
-  title: string
+  title?: string
+  icon?: React.ReactNode
   description?: string
   content?: React.ReactNode
   footer?: React.ReactNode
 }) => {
   return (
-    <Card>
-      <CardHeader>
-        <CardTitle>{title}</CardTitle>
-        <CardDescription>{description}</CardDescription>
+    <Card className="h-full">
+      <CardHeader className="py-4 text-sm">
+        <span className="inline-flex items-center justify-between">
+          <h3 className="tracking-tight font-semibold">{title}</h3>
+          {icon}
+        </span>
+        {description === undefined || <CardDescription className="hidden lg:block">{description}</CardDescription>}
       </CardHeader>
-      <CardContent>
+      <CardContent className="flex-1 overflow-y-scroll">
         {content}
       </CardContent>
-      <CardFooter>
-        {footer}
-      </CardFooter>
+      {footer === undefined || <CardFooter>{footer}</CardFooter>}
     </Card>
   )
 }

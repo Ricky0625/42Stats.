@@ -18,13 +18,9 @@ const routes = [
     label: "Overview",
   },
   {
-    href: "/test",
-    label: "Dummy"
+    href: "/blackhole",
+    label: "Blackhole"
   },
-  {
-    href: "/yolo",
-    label: "Dummy"
-  }
 ]
 
 const Logo = () => {
