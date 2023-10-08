@@ -21,7 +21,7 @@ type BlackholeState = {
   setViewState(state: TextState): void;
 }
 
-type BatchData = {
+export type BatchData = {
   month: number,
   year: number,
 }

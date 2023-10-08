@@ -1,16 +1,62 @@
 "use client"
 
-import AvatarTooltip from "@/components/AvatarTooltip"
 import AvatarWithHoverCard from "@/components/AvatarWithHoverCard"
 import CardDiv from "@/components/CardDiv"
+import OverviewFilterForm from "@/components/OverviewFilterForm"
 import TextBasedContent from "@/components/TextBasedContent"
 import TooltipText from "@/components/TooltipText"
 import { GaugeCircle, Hash, Smile, Timer, Tractor, Users2 } from "lucide-react"
 import React from "react"
+import { BatchData } from "./blackhole/page"
+
+type AvgLevelData = {
+  avg_level: number
+}
+
+type OverviewState = {
+  batch: BatchData;
+  setBatch(batch: BatchData): void;
+}
+
+export const OverviewContext = React.createContext<OverviewState>({
+  batch: { year: 0, month: 0 },
+  setBatch: (batch: BatchData) => { },
+});
+
+const getAverageLevel = async (year?: number, month?: number) => {
+  let URL = `/api/avg_level`
+
+  if (month === 0 || year === 0) {
+    const res = await fetch(URL);
+    const resJson = await res.json();
+    return resJson;
+  }
+
+  URL = URL + `?batch_year=${year}&batch_month=${month}`
+  const res = await fetch(URL);
+  const resJson = await res.json();
+  return resJson;
+}
 
 const AverageLevel = () => {
+
+  const ovCtx = React.useContext(OverviewContext)
+  const [averageLevel, setAverageLevel] = React.useState<AvgLevelData>({
+    avg_level: 0
+  });
+
+  React.useEffect(() => {
+    const fetchData = async () => {
+      return await getAverageLevel(ovCtx.batch.year, ovCtx.batch.month)
+    }
+
+    fetchData().then((res) => {
+      setAverageLevel(res)
+    })
+  }, [ovCtx.batch])
+
   return (
-    <TextBasedContent content="3.7" />
+    <TextBasedContent content={averageLevel.avg_level.toString()} />
   )
 }
 
@@ -36,42 +82,106 @@ const CadetToPiscinersRatio = () => {
 }
 
 type ActiveUserData = {
-  // id to userId
-  id: number,
   login: string,
   location: string,
   full_name: string,
-  image: string
+  image: string,
+  wallet: number,
+  eval_pts: number,
+  level: number,
+  bh_days: number,
+  cp_batch_year: number,
+  cp_batch_month: number
 }
 
-const getActiveUsers = async () => {
-  const res = await fetch(`/api/active_users`);
+const getActiveUsers = async (year?: number, month?: number) => {
+  let URL = `/api/active_users`
+
+  if (month === 0 || year === 0) {
+    const res = await fetch(URL);
+    const resJson = await res.json();
+    return resJson;
+  }
+
+  URL = URL + `?batch_year=${year}&batch_month=${month}`
+  const res = await fetch(URL);
   const resJson = await res.json();
   return resJson;
 }
 
 const ActiveUsers = () => {
 
+  const ovCtx = React.useContext(OverviewContext);
   const [activeUsers, setActiveUsers] = React.useState<ActiveUserData[]>([]);
 
   React.useEffect(() => {
     const fetchData = async () => {
-      return await getActiveUsers()
+      return await getActiveUsers(ovCtx.batch.year, ovCtx.batch.month)
     }
 
     fetchData().then((res) => {
       setActiveUsers(res)
     })
-  }, [])
+  }, [ovCtx.batch])
 
   return (
-    <div className="grid md:grid-cols-8 grid-cols-3 sm:grid-cols-4 gap-3">
-      {activeUsers.map((user, i) => (
-        <AvatarWithHoverCard src={user.image} intraName={user.login} name={user.login} content={<></>} />
-      ))}
-    </div>
+    activeUsers.length === 0
+      ? <p>No active users</p>
+      : <div className="grid md:grid-cols-8 grid-cols-3 sm:grid-cols-4 gap-3">
+        {activeUsers.map((user, i) => (
+          <AvatarWithHoverCard key={`active${i}`} src={user.image} intraName={user.login} name={user.login} content={<></>} />
+        ))}
+      </div>
   )
 }
+
+type ZombieData = {
+  id: number,
+  login: string,
+  full_name: string,
+  image: string,
+  eval_pts: number,
+  wallet: number,
+  location: string,
+  bh_days: number,
+  cp_batch_year: number,
+  cp_batch_month: number,
+  level: number,
+  login_time: number
+}
+
+const getZombies = async (n: number = 5) => {
+  const res = await fetch(`/api/login_time?n=${n}`);
+  const resJson = await res.json();
+  return resJson;
+}
+
+// const TopZombies = () => {
+
+//   const ovCtx = React.useContext(OverviewContext);
+//   const [zombies, setZombies] = React.useState<ZombieData[]>([]);
+
+//   React.useEffect(() => {
+//     const fetchData = async () => {
+//       return await getZombies()
+//     }
+
+//     fetchData().then((res) => {
+//       setZombies(res);
+//       console.log(res)
+//     })
+//   }, [ovCtx.batch])
+
+//   return (
+//     zombies.length === 0
+//       ? <p>No active users</p>
+//       : <div className="grid md:grid-cols-5 grid-cols-3 sm:grid-cols-4 gap-3">
+//         {zombies.map((user, i) => (
+//           <AvatarWithHoverCard key={`zombie${i}`} src={user.image} intraName={user.login} name={user.login} content={<></>} />
+//         ))}
+//       </div>
+//   )
+// }
 
 const statCards = [
   {
@@ -102,7 +212,7 @@ const statCards = [
     title: "Top Zombies",
     description: undefined,
     icon: <Smile size={20} />,
-    content: undefined,
+    content: <></>,
     footer: undefined,
     className: `sm:col-span-2 lg:row-span-2`
   },
@@ -126,22 +236,36 @@ const statCards = [
 
 // also known as Overview
 export default function Home() {
+
+  const [batch, setBatch] = React.useState<BatchData>({
+    month: 0,
+    year: 0,
+  });
+
   return (
-    <div className="container relative pt-6">
-      <h2 className="text-2xl md:text-3xl font-bold tracking-tight transition-colors first:mt-0">Overview</h2>
-      <div className="m-auto pt-6 grid sm:grid-cols-2 lg:grid-cols-5 lg:grid-rows-4 gap-4">
-        {statCards.map((stat, i) => (
-          <div className={stat.className} key={i}>
-            <CardDiv
-              title={stat.title}
-              description={stat.description}
-              icon={stat.icon}
-              content={stat.content}
-              footer={stat.footer}
-            />
-          </div>
-        ))}
+    <OverviewContext.Provider value={{
+      batch: batch,
+      setBatch: setBatch
+    }}>
+      <div className="container relative pt-6">
+        <div className="flex w-full flex-row justify-between items-center">
+          <h2 className="text-2xl md:text-3xl font-bold tracking-tight transition-colors first:mt-0">Overview</h2>
+          <OverviewFilterForm />
+        </div>
+        <div className="m-auto pt-6 grid sm:grid-cols-2 lg:grid-cols-5 lg:grid-rows-4 gap-4">
+          {statCards.map((stat, i) => (
+            <div className={stat.className} key={i}>
+              <CardDiv
+                title={stat.title}
+                description={stat.description}
+                icon={stat.icon}
+                content={stat.content}
+                footer={stat.footer}
+              />
+            </div>
+          ))}
+        </div>
       </div>
-    </div>
+    </OverviewContext.Provider>
   )
 }
