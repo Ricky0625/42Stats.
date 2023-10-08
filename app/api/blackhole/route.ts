@@ -7,7 +7,7 @@ async function getAllBHDays(year: number, month: number, all: boolean) {
 
   studentsInfo.forEach((student) => {
     if (student.bh_days !== null) {
-      if (all || student.cp_batch_year === year && student.cp_batch_month === month) {
+      if (all || (student.cp_batch_year === year && student.cp_batch_month === month)) {
         students.push(student)
       }
     }
@@ -25,7 +25,7 @@ export async function GET(
   let all = true;
   const yearStr: string = searchParams.get('batch_year')
   const monthStr: string = searchParams.get('batch_month')
-  if (yearStr !== undefined && monthStr !== undefined) {
+  if (yearStr !== null && monthStr !== null) {
     all = false;
     try {
       year = parseInt(yearStr)
