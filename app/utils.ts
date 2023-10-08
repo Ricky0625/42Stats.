@@ -65,14 +65,11 @@ async function updateStudentsInfoDB() {
 }
 
 export async function getStudentsInfo() {
-  const content = fs.readFileSync('students.json');
-  const contentJson = JSON.parse(content)
-  // if (contentJson.created_at && !isMoreThanOneHourAgo(contentJson.created_at)) {
-  //   return contentJson.students
-  // }
-
-  // await updateStudentsInfoDB();
-  // return await contentJson()
-
-  return contentJson
+  try {
+    const content = fs.readFileSync('students.json');
+    const contentJson = JSON.parse(content)
+    return contentJson
+  } catch (err) {
+    return []
+  }
 }
