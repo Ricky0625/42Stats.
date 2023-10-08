@@ -12,16 +12,15 @@ export async function GET(
   
   while (resJson.length !== 0) {
     for (let i = 0; i < resJson.length; i++) {
-      if (resJson[i].end_at === null && resJson[i].host) {
-        activeUsers.push({
-          id: resJson[i].id,
-          login: resJson[i].user.login,
-          host: resJson[i].host,
-          full_name: resJson[i].user.usual_full_name,
-          image: resJson[i].user.image.link,
-          // curr_project: getCurrentProject()
-        })
-      }
+      activeUsers.push({
+        id: resJson[i].id,
+        login: resJson[i].user.login,
+        location: resJson[i].host,
+        full_name: resJson[i].user.usual_full_name,
+        image: resJson[i].user.image.link,
+        wallet: resJson[i].wallet,
+        eval_pts: resJson[i].correction_point
+      })
     }
     page++;
     all42KLStudents = await fetch(`https://api.intra.42.fr/v2/locations?filter[active]=true&filter[campus_id]=34&page[size]=100&page[number]=${page}&access_token=${accessToken}`)
