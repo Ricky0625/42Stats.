@@ -51,7 +51,6 @@ const AverageLevel = () => {
     }
 
     fetchData().then((res) => {
-      console.log(res);
       setAverageLevel(res)
     })
   }, [ovCtx.batch])
@@ -143,6 +142,7 @@ type ZombieData = {
   image: string,
   eval_pts: number,
   wallet: number,
+  location: string,
   bh_days: number,
   cp_batch_year: number,
   cp_batch_month: number,
@@ -150,35 +150,38 @@ type ZombieData = {
   login_time: number
 }
 
-const getZombies = async () => {
-  const res = await fetch(`/api/login_time`);
+const getZombies = async (n: number = 5) => {
+  const res = await fetch(`/api/login_time?n=${n}`);
   const resJson = await res.json();
   return resJson;
 }
 
-const TopZombies = () => {
+// const TopZombies = () => {
 
-  // const [zombies, setZombies] = React.useState<ZombieData[]>([]);
+//   const ovCtx = React.useContext(OverviewContext);
+//   const [zombies, setZombies] = React.useState<ZombieData[]>([]);
 
-  // React.useEffect(() => {
-  //   const fetchData = async () => {
-  //     return await getZombies()
-  //   }
+//   React.useEffect(() => {
+//     const fetchData = async () => {
+//       return await getZombies()
+//     }
 
-  //   fetchData().then((res) => {
-  //     const top5 = res.sort((zombieA: ZombieData, zombieB: ZombieData) => (zombieB.login_time - zombieA.login_time)).slice(0, 5);
-  //     setZombies(top5);
-  //   })
-  // }, [])
+//     fetchData().then((res) => {
+//       setZombies(res);
+//       console.log(res)
+//     })
+//   }, [ovCtx.batch])
 
-  return (
-    <div className="grid md:grid-cols-8 grid-cols-3 sm:grid-cols-4 gap-3">
-      {/* {zombies.map((user, i) => (
-        <AvatarWithHoverCard key={`zombie${i}`} src={user.image} intraName={user.login} name={user.login} content={<></>} />
-      ))} */}
-    </div>
-  )
-}
+//   return (
+//     zombies.length === 0
+//       ? <p>No active users</p>
+//       : <div className="grid md:grid-cols-5 grid-cols-3 sm:grid-cols-4 gap-3">
+//         {zombies.map((user, i) => (
+//           <AvatarWithHoverCard key={`zombie${i}`} src={user.image} intraName={user.login} name={user.login} content={<></>} />
+//         ))}
+//       </div>
+//   )
+// }
 
 const statCards = [
   {
@@ -209,7 +212,7 @@ const statCards = [
     title: "Top Zombies",
     description: undefined,
     icon: <Smile size={20} />,
-    content: <TopZombies />,
+    content: <></>,
     footer: undefined,
     className: `sm:col-span-2 lg:row-span-2`
   },
