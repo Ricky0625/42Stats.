@@ -31,12 +31,16 @@ function getTimePassedInSeconds(begin, end) {
 export async function GET(
   req: NextRequest,
 ) {
+  const searchParams = req.nextUrl.searchParams
+  const topN = parseInt(searchParams.get('n'))
+  if (!topN) {
+    return NextResponse.json({'error': 'Invalid params'}, { status: 400 });
+  }
   const accessToken = await getAccessToken()
   let page = 1;
   const beginTime = getNDaysAgoDate(7)
   const endTime = getNDaysAgoDate(0)
   let allLoginSessions = await fetch(`https://api.intra.42.fr/v2/campus/34/locations?page[size]=100&page[number]=${page}&range[begin_at]=${beginTime},${endTime}&access_token=${accessToken}`)
-  // console.log(`https://api.intra.42.fr/v2/campus/34/locations?page[size]=100&page[number]=${page}&range[begin_at]=${beginTime},${endTime}`)
   if (!allLoginSessions.ok) {
     return NextResponse.json({'error': 'Error'}, { status: 400 });
   }
@@ -77,5 +81,11 @@ export async function GET(
     user.login_time = Math.round(user.login_time / 3600 * 10) / 10
   })
 
-  return NextResponse.json(usersLoginTime, { status: 200 });
+  usersLoginTime.sort((user1, user2) => {
+    return user2.login_time - user1.login_time
+  });
+
+  const topUsersLoginTime = usersLoginTime.slice(0, topN);
+
+  return NextResponse.json(topUsersLoginTime, { status: 200 });
 }
