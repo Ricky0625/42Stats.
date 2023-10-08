@@ -5,9 +5,10 @@ import BlackholeFilterForm from "@/components/BlackholeFilterForm"
 import CardDiv from "@/components/CardDiv"
 import Ranking from "@/components/Ranking"
 import TextBasedContent, { TextState } from "@/components/TextBasedContent"
-import { AlertTriangle, LandPlot, Laugh, Orbit, Skull, Users2 } from "lucide-react"
+import { AlertTriangle, LandPlot, Laugh, Orbit, Skull, ThumbsUp, Users2 } from "lucide-react"
 import React, { Suspense, useEffect } from "react"
 import Loading from "../loading"
+import AvatarTooltip, { UserData } from "@/components/AvatarTooltip"
 
 type BlackholeData = {
   login: string;
@@ -18,12 +19,31 @@ type BlackholeState = {
   mbhd: number;
   setMbhd(mbhd: number): void;
   data: BlackholeData[];
+  batch: BatchData
+  setBatch(batch: BatchData): void;
+}
+
+type BatchData = {
+  month: number | undefined,
+  year: number | undefined,
+}
+
+export const fakeUser: UserData = {
+  fullname: "Shad Cn",
+  batch: "FEB 2022",
+  evalPoints: 42,
+  alterianCoin: 555,
+  location: "U91 Z08 S02",
+  coalition: "Unix Unicorn",
+  level: 7.08
 }
 
 export const BlackholeContext = React.createContext<BlackholeState>({
   mbhd: 60,
-  setMbhd: (mbhd: number) => {},
-  data: []
+  setMbhd: (mbhd: number) => { },
+  data: [],
+  batch: { year: undefined, month: undefined },
+  setBatch: (batch: BatchData) => { },
 });
 
 const BlackholeUsers = () => {
@@ -39,7 +59,7 @@ const BlackholeUsers = () => {
   return (
     <div className="grid grid-cols-2 md:grid-cols-1 gap-3">
       {toppers.map((user, i) => (
-        <Ranking key={`${i}topper`} login={user.login} bhDay={user.bhDays}/>
+        <Ranking key={`${i}topper`} login={user.login} bhDay={user.bhDays} />
       ))}
     </div>
   )
@@ -56,11 +76,13 @@ const DangerZone = () => {
   }, [data])
 
   return (
-    <div className="grid grid-cols-4 sm:grid-cols-5 md:grid-cols-3 lg:grid-cols-4 gap-3">
-      {dangers.map((user, i) => (
-        <AvatarWithHoverCard key={`${i}danger`} src="https://github.com/shadcn.png" name={user.login} content={<></>} />
-      ))}
-    </div>
+    dangers.length === 0
+      ? <div className="grid place-items-center min-h-full text-sm pt-6"><ThumbsUp />No one is in the danger zone.</div>
+      : <div className="grid grid-cols-4 sm:grid-cols-5 md:grid-cols-3 lg:grid-cols-4 gap-3">
+        {dangers.map((user, i) => (
+          <AvatarWithHoverCard key={`${i}danger`} src="https://github.com/shadcn.png" name={user.login} intraName={user.login} content={<AvatarTooltip {...fakeUser} />} />
+        ))}
+      </div>
   )
 }
 
@@ -82,7 +104,6 @@ const BlackholeStatContent = ({
   useEffect(() => {
     const key = state === TextState.OK ? "ok" : state === TextState.WARNING ? "warning" : "destructive";
     const count = data.filter(filterFunc[key]);
-    console.log(key, count)
     setValue(count.length)
   }, [data])
 
@@ -116,6 +137,14 @@ const statCards = [
     footer: undefined,
     className: `col-span-1 md:row-start-3 row-span-1`
   },
+  {
+    title: "Fallen Soldiers",
+    description: undefined,
+    icon: <Skull size={20} />,
+    content: <BlackholeStatContent state={TextState.DESTRUCTIVE} />,
+    footer: undefined,
+    className: `col-span-1 md:row-start-4 row-span-1`
+  },
 ]
 
 const blackholeList = [
@@ -147,30 +176,37 @@ export default function Blackhole() {
 
   const [mbhd, setMbhd] = React.useState(60);
   const [data, setData] = React.useState([]);
+  const [batch, setBatch] = React.useState<BatchData>({
+    month: undefined,
+    year: undefined,
+  });
 
   React.useEffect(() => {
     const fetchData = async () => {
+      // TODO: adjust batch
       return await getBlackholeUsers()
     }
 
     fetchData().then((res) => {
       setData(res)
     })
-  }, [mbhd])
+  }, [mbhd, batch])
 
   return (
     <BlackholeContext.Provider value={{
       mbhd: mbhd,
       setMbhd: setMbhd,
-      data: data}}
-    >
-      <div className="container relative pt-6">
+      data: data,
+      batch: batch,
+      setBatch: setBatch
+    }}>
+      <div className="container relative pt-6 max-h-screen">
         <div className="flex w-full flex-row justify-between items-center">
           <h2 className="text-2xl md:text-3xl font-bold tracking-tight transition-colors first:mt-0">Blackhole</h2>
           <BlackholeFilterForm />
         </div>
         <Suspense fallback={<Loading />}>
-          <div className="m-auto pt-6 grid sm:grid-cols-1 md:grid-cols-3 lg:grid-cols-5 grid-rows-9 md:grid-rows-6 lg:grid-rows-5 gap-4">
+          <div className="m-auto pt-6 grid sm:grid-cols-1 md:grid-cols-3 lg:grid-cols-5 grid-rows-9 md:grid-rows-6 lg:grid-rows-4 gap-4">
             {statCards.map((stat, i) => (
               <div className={stat.className} key={i}>
                 <CardDiv

@@ -1,0 +1,645 @@
+{
+    "last_update": "2023-10-08T12:48:49.984Z",
+    "bhDaysInfo": [
+        {
+            "login": "wehuang",
+            "bhDays": 134
+        },
+        {
+            "login": "ychai",
+            "bhDays": 86
+        },
+        {
+            "login": "tjun-yu",
+            "bhDays": 86
+        },
+        {
+            "login": "abin-zub",
+            "bhDays": 86
+        },
+        {
+            "login": "lyip",
+            "bhDays": 86
+        },
+        {
+            "login": "yantang",
+            "bhDays": 86
+        },
+        {
+            "login": "zhsiew",
+            "bhDays": 86
+        },
+        {
+            "login": "wbin-wan",
+            "bhDays": 86
+        },
+        {
+            "login": "tkok-kea",
+            "bhDays": 86
+        },
+        {
+            "login": "fizad",
+            "bhDays": 86
+        },
+        {
+            "login": "afiali",
+            "bhDays": 86
+        },
+        {
+            "login": "jliaw",
+            "bhDays": 63
+        },
+        {
+            "login": "jiachang",
+            "bhDays": 75
+        },
+        {
+            "login": "ysheraun",
+            "bhDays": 51
+        },
+        {
+            "login": "sinlee",
+            "bhDays": 120
+        },
+        {
+            "login": "djin",
+            "bhDays": 146
+        },
+        {
+            "login": "yitay",
+            "bhDays": 143
+        },
+        {
+            "login": "amazlan",
+            "bhDays": 15
+        },
+        {
+            "login": "salmoham",
+            "bhDays": 75
+        },
+        {
+            "login": "qang",
+            "bhDays": 92
+        },
+        {
+            "login": "jlow",
+            "bhDays": 78
+        },
+        {
+            "login": "ychng",
+            "bhDays": 150
+        },
+        {
+            "login": "czheng-c",
+            "bhDays": 59
+        },
+        {
+            "login": "kecheong",
+            "bhDays": 151
+        },
+        {
+            "login": "sloke",
+            "bhDays": 36
+        },
+        {
+            "login": "ccheng-c",
+            "bhDays": 77
+        },
+        {
+            "login": "khaaziq",
+            "bhDays": 145
+        },
+        {
+            "login": "kjun-er",
+            "bhDays": 17
+        },
+        {
+            "login": "lzapata",
+            "bhDays": 14
+        },
+        {
+            "login": "lweng-ho",
+            "bhDays": 20
+        },
+        {
+            "login": "asharikh",
+            "bhDays": 20
+        },
+        {
+            "login": "rsoo",
+            "bhDays": 241
+        },
+        {
+            "login": "jiawong",
+            "bhDays": -24
+        },
+        {
+            "login": "jintan",
+            "bhDays": 49
+        },
+        {
+            "login": "ygoh",
+            "bhDays": -79
+        },
+        {
+            "login": "lewlee",
+            "bhDays": 246
+        },
+        {
+            "login": "dtiong",
+            "bhDays": 65
+        },
+        {
+            "login": "dravi-ch",
+            "bhDays": 63
+        },
+        {
+            "login": "booi",
+            "bhDays": 125
+        },
+        {
+            "login": "ghwa",
+            "bhDays": 129
+        },
+        {
+            "login": "myin-hao",
+            "bhDays": 20
+        },
+        {
+            "login": "hetan",
+            "bhDays": 27
+        },
+        {
+            "login": "asaravan",
+            "bhDays": -20
+        },
+        {
+            "login": "etlim",
+            "bhDays": 48
+        },
+        {
+            "login": "jhuang",
+            "bhDays": -14
+        },
+        {
+            "login": "jontan",
+            "bhDays": -9
+        },
+        {
+            "login": "mtang",
+            "bhDays": -251
+        },
+        {
+            "login": "athabran",
+            "bhDays": -93
+        },
+        {
+            "login": "ketan",
+            "bhDays": -251
+        },
+        {
+            "login": "jyim",
+            "bhDays": 113
+        },
+        {
+            "login": "atok",
+            "bhDays": 73
+        },
+        {
+            "login": "hleong",
+            "bhDays": -71
+        },
+        {
+            "login": "ywong",
+            "bhDays": 37
+        },
+        {
+            "login": "jchu",
+            "bhDays": 3
+        },
+        {
+            "login": "yraji",
+            "bhDays": -124
+        },
+        {
+            "login": "lyie-xua",
+            "bhDays": -22
+        },
+        {
+            "login": "suchua",
+            "bhDays": 155
+        },
+        {
+            "login": "nwai-kea",
+            "bhDays": 20
+        },
+        {
+            "login": "mrayhan",
+            "bhDays": -73
+        },
+        {
+            "login": "kkah-wen",
+            "bhDays": 62
+        },
+        {
+            "login": "mmuhamad",
+            "bhDays": 83
+        },
+        {
+            "login": "kyong",
+            "bhDays": 55
+        },
+        {
+            "login": "mdominic",
+            "bhDays": -199
+        },
+        {
+            "login": "ysar",
+            "bhDays": -4
+        },
+        {
+            "login": "wtan2",
+            "bhDays": -285
+        },
+        {
+            "login": "lgoh",
+            "bhDays": -237
+        },
+        {
+            "login": "ktan",
+            "bhDays": -137
+        },
+        {
+            "login": "eacheah",
+            "bhDays": -201
+        },
+        {
+            "login": "gdaryl",
+            "bhDays": 5
+        },
+        {
+            "login": "mmohd-fa",
+            "bhDays": -137
+        },
+        {
+            "login": "thong-bi",
+            "bhDays": 83
+        },
+        {
+            "login": "etlaw",
+            "bhDays": 68
+        },
+        {
+            "login": "wxuerui",
+            "bhDays": 178
+        },
+        {
+            "login": "bhung-yi",
+            "bhDays": 5
+        },
+        {
+            "login": "fothman",
+            "bhDays": -22
+        },
+        {
+            "login": "cshi-xia",
+            "bhDays": 124
+        },
+        {
+            "login": "zah",
+            "bhDays": 206
+        },
+        {
+            "login": "jteoh",
+            "bhDays": 23
+        },
+        {
+            "login": "yichan",
+            "bhDays": 59
+        },
+        {
+            "login": "cocheong",
+            "bhDays": 15
+        },
+        {
+            "login": "maliew",
+            "bhDays": 216
+        },
+        {
+            "login": "rkaban",
+            "bhDays": -165
+        },
+        {
+            "login": "schow",
+            "bhDays": -247
+        },
+        {
+            "login": "rchoy",
+            "bhDays": 91
+        },
+        {
+            "login": "nchee",
+            "bhDays": -22
+        },
+        {
+            "login": "ntan-wan",
+            "bhDays": 68
+        },
+        {
+            "login": "vvetrive",
+            "bhDays": -369
+        },
+        {
+            "login": "sbinti-s",
+            "bhDays": -369
+        },
+        {
+            "login": "jocheng",
+            "bhDays": -154
+        },
+        {
+            "login": "yyap",
+            "bhDays": -166
+        },
+        {
+            "login": "adahmad",
+            "bhDays": -160
+        },
+        {
+            "login": "lwilliam",
+            "bhDays": 89
+        },
+        {
+            "login": "lchun-jh",
+            "bhDays": -114
+        },
+        {
+            "login": "cweng-ho",
+            "bhDays": -174
+        },
+        {
+            "login": "yalee",
+            "bhDays": 28
+        },
+        {
+            "login": "panand",
+            "bhDays": -316
+        },
+        {
+            "login": "lyao-che",
+            "bhDays": -264
+        },
+        {
+            "login": "mpang",
+            "bhDays": -261
+        },
+        {
+            "login": "chenlee",
+            "bhDays": 116
+        },
+        {
+            "login": "tyi-shen",
+            "bhDays": -143
+        },
+        {
+            "login": "aong",
+            "bhDays": -333
+        },
+        {
+            "login": "hlye-chi",
+            "bhDays": -398
+        },
+        {
+            "login": "chchin",
+            "bhDays": 312
+        },
+        {
+            "login": "gualee",
+            "bhDays": 55
+        },
+        {
+            "login": "abasarud",
+            "bhDays": -92
+        },
+        {
+            "login": "wricky-t",
+            "bhDays": 205
+        },
+        {
+            "login": "welim",
+            "bhDays": 81
+        },
+        {
+            "login": "alyap",
+            "bhDays": 45
+        },
+        {
+            "login": "brbong",
+            "bhDays": -367
+        },
+        {
+            "login": "jakoh",
+            "bhDays": 111
+        },
+        {
+            "login": "hdzulkar",
+            "bhDays": -411
+        },
+        {
+            "login": "tjun-ren",
+            "bhDays": -435
+        },
+        {
+            "login": "nabdul-r",
+            "bhDays": -375
+        },
+        {
+            "login": "sitbinti",
+            "bhDays": -336
+        },
+        {
+            "login": "catan",
+            "bhDays": -591
+        },
+        {
+            "login": "clau",
+            "bhDays": -496
+        },
+        {
+            "login": "jotran",
+            "bhDays": -475
+        },
+        {
+            "login": "payong",
+            "bhDays": -470
+        },
+        {
+            "login": "riramli",
+            "bhDays": -73
+        },
+        {
+            "login": "zyong",
+            "bhDays": -535
+        },
+        {
+            "login": "dgaw",
+            "bhDays": -397
+        },
+        {
+            "login": "dtan",
+            "bhDays": -293
+        },
+        {
+            "login": "jifoo",
+            "bhDays": -653
+        },
+        {
+            "login": "jiwong",
+            "bhDays": -370
+        },
+        {
+            "login": "klee",
+            "bhDays": -677
+        },
+        {
+            "login": "vvelayut",
+            "bhDays": -383
+        },
+        {
+            "login": "bbong",
+            "bhDays": -444
+        },
+        {
+            "login": "emanagor",
+            "bhDays": -534
+        },
+        {
+            "login": "cdaniel",
+            "bhDays": -618
+        },
+        {
+            "login": "amohd-ni",
+            "bhDays": -430
+        },
+        {
+            "login": "byeap",
+            "bhDays": -497
+        },
+        {
+            "login": "jatan",
+            "bhDays": 54
+        },
+        {
+            "login": "wsalehud",
+            "bhDays": -463
+        },
+        {
+            "login": "lzheng-j",
+            "bhDays": -438
+        },
+        {
+            "login": "slim",
+            "bhDays": -338
+        },
+        {
+            "login": "nlim-way",
+            "bhDays": -615
+        },
+        {
+            "login": "azaid",
+            "bhDays": -409
+        },
+        {
+            "login": "mshum",
+            "bhDays": -348
+        },
+        {
+            "login": "jyeow",
+            "bhDays": -641
+        },
+        {
+            "login": "ktiong",
+            "bhDays": -293
+        },
+        {
+            "login": "kalim",
+            "bhDays": -408
+        },
+        {
+            "login": "ltan",
+            "bhDays": -606
+        },
+        {
+            "login": "ctan",
+            "bhDays": -701
+        },
+        {
+            "login": "wtan",
+            "bhDays": -321
+        },
+        {
+            "login": "hloke",
+            "bhDays": 11
+        },
+        {
+            "login": "jnm-jaya",
+            "bhDays": 93
+        },
+        {
+            "login": "tke-ying",
+            "bhDays": -335
+        },
+        {
+            "login": "zyeo",
+            "bhDays": -464
+        },
+        {
+            "login": "gatan",
+            "bhDays": -405
+        },
+        {
+            "login": "syee-cha",
+            "bhDays": -634
+        },
+        {
+            "login": "hchiam",
+            "bhDays": -544
+        },
+        {
+            "login": "jking-ye",
+            "bhDays": 86
+        },
+        {
+            "login": "stiang",
+            "bhDays": -553
+        },
+        {
+            "login": "lboh-chu",
+            "bhDays": -453
+        },
+        {
+            "login": "syap",
+            "bhDays": -638
+        },
+        {
+            "login": "ychow",
+            "bhDays": -587
+        },
+        {
+            "login": "yisim",
+            "bhDays": -436
+        },
+        {
+            "login": "telee",
+            "bhDays": -96
+        },
+        {
+            "login": "gone",
+            "bhDays": -243
+        },
+        {
+            "login": "thvijaya",
+            "bhDays": -438
+        }
+    ]
+}
