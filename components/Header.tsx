@@ -11,6 +11,7 @@ import {
 } from "@/components/ui/sheet"
 import { usePathname } from "next/navigation"
 import CommandBox from "./CommandBox"
+import React from "react"
 
 const routes = [
   {
@@ -68,9 +69,12 @@ const BurgerNav = ({
 }: {
   pathname: string
 }) => {
+
+  const [open, setOpen] = React.useState(false);
+
   return (
     <div className="md:hidden flex flex-row space-x-4">
-      <Sheet>
+      <Sheet open={open} onOpenChange={setOpen}>
         <SheetTrigger><Menu size={16} strokeWidth={2} /></SheetTrigger>
         <SheetContent side={"left"}>
           <div className="flex flex-col space-y-4">
@@ -78,7 +82,7 @@ const BurgerNav = ({
               <span className="font-bold">42Stats.</span>
             </Link>
             {routes.map((route, i) => (
-              <Link key={i} href={route.href} className={`font-medium hover:text-foreground/80 text-foreground/60 ${pathname === route.href && `text-primary font-semibold`}`}>
+              <Link key={i} onClick={() => setOpen(false)} href={route.href} className={`font-medium hover:text-foreground/80 text-foreground/60 ${pathname === route.href && `text-primary font-semibold`}`}>
                 {route.label}
               </Link>
             ))}
