@@ -184,7 +184,6 @@ export default function Blackhole() {
   });
 
   React.useEffect(() => {
-    console.log(batch, mbhd)
     const fetchData = async () => {
       return await getBlackholeUsers(batch.year, batch.month)
     }
