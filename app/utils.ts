@@ -1,3 +1,6 @@
+import * as fs from 'fs';
+
+
 export async function getAccessToken() {
   const uid = process.env.UID;
   const secret = process.env.SECRET;
@@ -21,4 +24,11 @@ export function isDateToday(dateString: string) {
   return inputDate.getUTCDate() === today.getUTCDate() &&
          inputDate.getUTCMonth() === today.getUTCMonth() &&
          inputDate.getUTCFullYear() === today.getUTCFullYear();
+}
+
+export async function getStudentsInfo() {
+  const content = fs.readFileSync('students.json');
+  const contentJson: Object[] = JSON.parse(content)
+
+  return contentJson
 }
