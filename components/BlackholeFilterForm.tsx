@@ -28,31 +28,68 @@ import * as z from "zod"
 import { useForm } from "react-hook-form"
 import React from "react"
 import { BlackholeContext } from "@/app/blackhole/page"
+import { MONTH } from "./AvatarTooltip"
 
 const formSchema = z.object({
   safeZoneMin: z.coerce.number().gte(10, { message: "Must be greater and equal to 10" }),
+  batch: z.string()
 })
+
+type BatchData = {
+  year: number,
+  month: number
+}
+
+const getALlBatch = async () => {
+  const res = await fetch(`/api/batch`);
+  const resJson = await res.json();
+  return resJson;
+}
 
 const BlackholeFilterForm = () => {
 
   const [open, setOpen] = React.useState(false)
+  const [batchLabels, setBatchLabels] = React.useState<BatchData[]>([])
   const bhCtx = React.useContext(BlackholeContext)
 
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
     defaultValues: {
-      safeZoneMin: bhCtx.mbhd
+      safeZoneMin: bhCtx.mbhd,
+      batch: "All"
     }
   })
 
   const onSubmit = (values: z.infer<typeof formSchema>) => {
     bhCtx.setMbhd(values.safeZoneMin)
+    if (values.batch === "All")
+      bhCtx.setBatch({
+        year: 0,
+        month: 0
+      })
+    else {
+      const batchInfo = values.batch.split(" ")
+      bhCtx.setBatch({
+        year: Number(batchInfo[1]),
+        month: MONTH.indexOf(batchInfo[0]) + 1
+      })
+    }
     setOpen(false)
   }
 
+  React.useEffect(() => {
+    const fetchAllBatch = async () => {
+      return await getALlBatch()
+    }
+
+    fetchAllBatch().then((res) => {
+      setBatchLabels(res)
+    })
+  }, [])
+
   return (
     <div className="flex flex-row justify-between items-center space-x-4">
-      <p className="text-foreground/40 font-semibold text-sm hidden md:block">Batch: {bhCtx.batch.month === undefined && bhCtx.batch.year === undefined ? "All" : `${bhCtx.batch.month} ${bhCtx.batch.year}`}</p>
+      <p className="text-foreground/40 font-semibold text-sm hidden md:block">Batch: {bhCtx.batch.month === 0 && bhCtx.batch.year === 0 ? "All" : `${MONTH[bhCtx.batch.month - 1]} ${bhCtx.batch.year}`}</p>
       <span className="text-foreground/30 font-bold hidden md:block">|</span>
       <p className="text-foreground/40 font-semibold text-sm hidden md:block">MBHD: {bhCtx.mbhd}</p>
       <Dialog open={open} onOpenChange={setOpen}>
@@ -74,6 +111,29 @@ const BlackholeFilterForm = () => {
                     <FormDescription>
                       Any value less than MBHD will consider as <span className="text-destructive-foreground font-bold">Danger zone</span>
                     </FormDescription>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+              <FormField
+                control={form.control}
+                name="batch"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel>Batch</FormLabel>
+                    <Select onValueChange={field.onChange} defaultValue={field.value}>
+                      <FormControl>
+                        <SelectTrigger>
+                          <SelectValue placeholder="Select a batch to filter" />
+                        </SelectTrigger>
+                      </FormControl>
+                      <SelectContent className=" overflow-y-scroll max-h-56">
+                        <SelectItem value={"All"}>All</SelectItem>
+                        {batchLabels.map((batch, i) => (
+                          <SelectItem key={`${i}${batch.month}`} value={`${MONTH[batch.month - 1]} ${batch.year}`}>{`${MONTH[batch.month - 1]} ${batch.year}`}</SelectItem>
+                        ))}
+                      </SelectContent>
+                    </Select>
                     <FormMessage />
                   </FormItem>
                 )}

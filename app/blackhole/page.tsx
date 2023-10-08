@@ -5,82 +5,79 @@ import BlackholeFilterForm from "@/components/BlackholeFilterForm"
 import CardDiv from "@/components/CardDiv"
 import Ranking from "@/components/Ranking"
 import TextBasedContent, { TextState } from "@/components/TextBasedContent"
-import { AlertTriangle, LandPlot, Laugh, Orbit, Skull, ThumbsUp, Users2 } from "lucide-react"
+import { AlertTriangle, LandPlot, Laugh, Orbit, Skull, ThumbsUp } from "lucide-react"
 import React, { Suspense, useEffect } from "react"
 import Loading from "../loading"
-import AvatarTooltip, { UserData } from "@/components/AvatarTooltip"
-
-type BlackholeData = {
-  login: string;
-  bhDays: number;
-}
+import { UserData } from "./blackholeData"
+import AvatarTooltip from "@/components/AvatarTooltip"
 
 type BlackholeState = {
   mbhd: number;
   setMbhd(mbhd: number): void;
-  data: BlackholeData[];
+  data: UserData[];
   batch: BatchData
   setBatch(batch: BatchData): void;
+  viewState: TextState
+  setViewState(state: TextState): void;
 }
 
 type BatchData = {
-  month: number | undefined,
-  year: number | undefined,
-}
-
-export const fakeUser: UserData = {
-  fullname: "Shad Cn",
-  batch: "FEB 2022",
-  evalPoints: 42,
-  alterianCoin: 555,
-  location: "U91 Z08 S02",
-  coalition: "Unix Unicorn",
-  level: 7.08
+  month: number,
+  year: number,
 }
 
 export const BlackholeContext = React.createContext<BlackholeState>({
   mbhd: 60,
   setMbhd: (mbhd: number) => { },
   data: [],
-  batch: { year: undefined, month: undefined },
+  batch: { year: 0, month: 0 },
   setBatch: (batch: BatchData) => { },
+  viewState: TextState.WARNING,
+  setViewState: (viewState: TextState) => { },
 });
 
 const BlackholeUsers = () => {
 
   const { data } = React.useContext(BlackholeContext);
-  const [toppers, setToppers] = React.useState<BlackholeData[]>([])
+  const [toppers, setToppers] = React.useState<UserData[]>([])
 
   useEffect(() => {
-    const top10 = data.filter((bhData) => bhData.bhDays >= 0).sort((bhData1, bhData2) => (bhData1.bhDays - bhData2.bhDays)).slice(0, 10)
+    const top10 = data.filter((user) => user.bh_days >= 0).sort((userA, userB) => (userA.bh_days - userB.bh_days)).slice(0, 10)
     setToppers(top10);
   }, [data])
 
   return (
     <div className="grid grid-cols-2 md:grid-cols-1 gap-3">
       {toppers.map((user, i) => (
-        <Ranking key={`${i}topper`} login={user.login} bhDay={user.bhDays} />
+        <Ranking key={`${i}topper`} {...user} />
       ))}
     </div>
   )
 }
 
-const DangerZone = () => {
+const ZoneViewer = () => {
 
-  const { data, mbhd } = React.useContext(BlackholeContext);
-  const [dangers, setDangers] = React.useState<BlackholeData[]>([])
+  const { data, mbhd, viewState } = React.useContext(BlackholeContext);
+  const [users, setUsers] = React.useState<UserData[]>([])
+
+  const filterFunc = {
+    "ok": (user: UserData) => user.bh_days >= mbhd,
+    "warning": (user: UserData) => user.bh_days < mbhd && user.bh_days >= 0,
+    "destructive": (user: UserData) => user.bh_days < 0,
+  }
 
   useEffect(() => {
-    const dangers = data.filter((bhData) => bhData.bhDays >= 0 && bhData.bhDays < mbhd)
-    setDangers(dangers);
-  }, [data])
+    const key = viewState === TextState.OK ? "ok" : viewState === TextState.WARNING ? "warning" : "destructive";
+    const users = data.filter(filterFunc[key]);
+    setUsers(users);
+  }, [data, viewState])
 
   return (
-    dangers.length === 0
-      ? <div className="grid place-items-center min-h-full text-sm pt-6"><ThumbsUp />No one is in the danger zone.</div>
+    users.length === 0
+      ? <div className="grid place-items-center min-h-full text-sm pt-6"><ThumbsUp />No one is in the {`${viewState === TextState.OK ? "safe" : viewState === TextState.WARNING ? "danger" : "dead"}`} zone.</div>
       : <div className="grid grid-cols-4 sm:grid-cols-5 md:grid-cols-3 lg:grid-cols-4 gap-3">
-        {dangers.map((user, i) => (
-          <AvatarWithHoverCard key={`${i}danger`} src="https://github.com/shadcn.png" name={user.login} intraName={user.login} content={<AvatarTooltip {...fakeUser} />} />
+        {users.map((user, i) => (
+          <AvatarWithHoverCard key={`${i}danger`} src={user.image} name={user.login} intraName={user.login} content={<AvatarTooltip {...user} />} />
         ))}
       </div>
   )
@@ -92,13 +89,13 @@ const BlackholeStatContent = ({
   state?: TextState,
 }) => {
 
-  const { data, mbhd } = React.useContext(BlackholeContext);
+  const { data, mbhd, setViewState } = React.useContext(BlackholeContext);
   const [value, setValue] = React.useState(0);
 
   const filterFunc = {
-    "ok": (bhData: BlackholeData) => bhData.bhDays >= mbhd,
-    "warning": (bhData: BlackholeData) => bhData.bhDays < mbhd && bhData.bhDays >= 0,
-    "destructive": (bhData: BlackholeData) => bhData.bhDays < 0,
+    "ok": (user: UserData) => user.bh_days >= mbhd,
+    "warning": (user: UserData) => user.bh_days < mbhd && user.bh_days >= 0,
+    "destructive": (user: UserData) => user.bh_days < 0,
   }
 
   useEffect(() => {
@@ -119,6 +116,7 @@ const statCards = [
     icon: <Laugh size={20} />,
     content: <BlackholeStatContent state={TextState.OK} />,
     footer: undefined,
+    state: TextState.OK,
     className: `col-span-1 md:row-start-1 row-span-1`
   },
   {
@@ -127,6 +125,7 @@ const statCards = [
     icon: <AlertTriangle size={20} />,
     content: <BlackholeStatContent state={TextState.WARNING} />,
     footer: undefined,
+    state: TextState.WARNING,
     className: `col-span-1 md:row-start-2 row-span-1`
   },
   {
@@ -135,15 +134,8 @@ const statCards = [
     icon: <Skull size={20} />,
     content: <BlackholeStatContent state={TextState.DESTRUCTIVE} />,
     footer: undefined,
+    state: TextState.DESTRUCTIVE,
     className: `col-span-1 md:row-start-3 row-span-1`
-  },
-  {
-    title: "Fallen Soldiers",
-    description: undefined,
-    icon: <Skull size={20} />,
-    content: <BlackholeStatContent state={TextState.DESTRUCTIVE} />,
-    footer: undefined,
-    className: `col-span-1 md:row-start-4 row-span-1`
   },
 ]
 
@@ -160,14 +152,23 @@ const blackholeList = [
     title: "In Danger Zone",
     description: "Time's ticking, but hope remains for our comrades!",
     icon: <LandPlot size={20} />,
-    content: <DangerZone />,
+    content: <ZoneViewer />,
     footer: undefined,
     className: `col-span-1 row-span-3 lg:col-span-2`
   },
 ]
 
-const getBlackholeUsers = async () => {
-  const res = await fetch(`/api/blackhole`);
+const getBlackholeUsers = async (year?: number, month?: number) => {
+  let URL = `/api/blackhole`
+
+  if (month === 0 || year === 0) {
+    const res = await fetch(URL);
+    const resJson = await res.json();
+    return resJson;
+  }
+
+  URL = URL + `?batch_year=${year}&batch_month=${month}`
+  const res = await fetch(URL);
   const resJson = await res.json();
   return resJson;
 }
@@ -176,15 +177,16 @@ export default function Blackhole() {
 
   const [mbhd, setMbhd] = React.useState(60);
   const [data, setData] = React.useState([]);
+  const [viewState, setViewState] = React.useState(TextState.WARNING);
   const [batch, setBatch] = React.useState<BatchData>({
-    month: undefined,
-    year: undefined,
+    month: 0,
+    year: 0,
   });
 
   React.useEffect(() => {
+    console.log(batch, mbhd)
     const fetchData = async () => {
-      // TODO: adjust batch
-      return await getBlackholeUsers()
+      return await getBlackholeUsers(batch.year, batch.month)
     }
 
     fetchData().then((res) => {
@@ -198,7 +200,9 @@ export default function Blackhole() {
       setMbhd: setMbhd,
       data: data,
       batch: batch,
-      setBatch: setBatch
+      setBatch: setBatch,
+      viewState: viewState,
+      setViewState: setViewState,
     }}>
       <div className="container relative pt-6 max-h-screen">
         <div className="flex w-full flex-row justify-between items-center">
@@ -208,7 +212,7 @@ export default function Blackhole() {
         <Suspense fallback={<Loading />}>
           <div className="m-auto pt-6 grid sm:grid-cols-1 md:grid-cols-3 lg:grid-cols-5 grid-rows-9 md:grid-rows-6 lg:grid-rows-4 gap-4">
             {statCards.map((stat, i) => (
-              <div className={stat.className} key={i}>
+              <div className={stat.className + ` cursor-pointer`} key={i} onClick={() => setViewState(stat.state)}>
                 <CardDiv
                   title={stat.title}
                   description={stat.description}
@@ -221,7 +225,7 @@ export default function Blackhole() {
             {blackholeList.map((stat, i) => (
               <div className={stat.className} key={i}>
                 <CardDiv
-                  title={stat.title}
+                  title={i === 0 ? stat.title : viewState === TextState.OK ? "In Safe Zone" : viewState === TextState.WARNING ? "In Danger Zone" : "In Dead Zone"}
                   description={stat.description}
                   icon={stat.icon}
                   content={stat.content}

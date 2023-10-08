@@ -9,8 +9,8 @@ const AvatarPic = ({
 }) => {
   return (
     <Avatar>
-      <AvatarImage src={src} alt={`@${name}`}/>
-      <AvatarFallback>{name.toUpperCase()}</AvatarFallback>
+      <AvatarImage src={src} alt={`@${name}`} className=" object-cover"/>
+      <AvatarFallback>{name.slice(0,2).toUpperCase()}</AvatarFallback>
     </Avatar>
   )
 }
