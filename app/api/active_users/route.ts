@@ -5,12 +5,25 @@ export async function GET(
   req: NextRequest,
 ) {
   const accessToken = await getAccessToken()
-  const all42KLStudents = await fetch(`https://api.intra.42.fr/v2/campus/34/users?access_token=${accessToken}&page[size]=100&page[number]=3`)
-  const resJson: Object[] = await all42KLStudents.json()
+  let page = 1;
+  let all42KLStudents = await fetch(`https://api.intra.42.fr/v2/locations?filter[active]=true&filter[campus_id]=34&page[size]=100&page[number]=${page}&access_token=${accessToken}`)
+  let resJson: Object[] = await all42KLStudents.json()
+  let activeUsers: Object[] = []
   
-  for (let i = 0; i < resJson.length; i++) {
-    console.log(resJson[i]['active?'])
+  while (resJson.length !== 0) {
+    for (let i = 0; i < resJson.length; i++) {
+      if (resJson[i].end_at === null && resJson[i].host) {
+        activeUsers.push({
+          login: resJson[i].user.login,
+          host: resJson[i].host,
+          full_name: resJson[i].usual_full_name
+        })
+      }
+    }
+    page++;
+    all42KLStudents = await fetch(`https://api.intra.42.fr/v2/locations?filter[active]=true&filter[campus_id]=34&page[size]=100&page[number]=${page}&access_token=${accessToken}`)
+    resJson = await all42KLStudents.json()
   }
-  let activeUsers = resJson.filter((user) => (user['location'] !== null))
+
   return NextResponse.json(activeUsers, { status: 200 });
 }
