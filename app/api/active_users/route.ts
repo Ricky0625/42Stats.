@@ -13,7 +13,7 @@ export async function GET(
   while (resJson.length !== 0) {
     for (let i = 0; i < resJson.length; i++) {
       activeUsers.push({
-        id: resJson[i].id,
+        id: resJson[i].user.id,
         login: resJson[i].user.login,
         location: resJson[i].host,
         full_name: resJson[i].user.usual_full_name,
