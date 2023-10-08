@@ -14,9 +14,12 @@ export async function GET(
     for (let i = 0; i < resJson.length; i++) {
       if (resJson[i].end_at === null && resJson[i].host) {
         activeUsers.push({
+          id: resJson[i].id,
           login: resJson[i].user.login,
           host: resJson[i].host,
-          full_name: resJson[i].usual_full_name
+          full_name: resJson[i].user.usual_full_name,
+          image: resJson[i].user.image.link,
+          // curr_project: getCurrentProject()
         })
       }
     }
