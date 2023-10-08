@@ -1,15 +1,5 @@
 import { NextRequest, NextResponse } from "next/server";
-import { NextApiRequest } from "next";
-import { getAccessToken, isDateToday } from "@/app/utils";
-import * as fs from 'fs';
-
-
-async function getStudentsInfo() {
-  const content = fs.readFileSync('students.json');
-  const contentJson: Object[] = JSON.parse(content)
-
-  return contentJson
-}
+import { getAccessToken, isDateToday, getStudentsInfo } from "@/app/utils";
 
 async function getAllBHDays(year: number, month: number, all: boolean) {
   const studentsInfo = await getStudentsInfo()
