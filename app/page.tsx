@@ -1,8 +1,12 @@
+"use client"
+
+import AvatarTooltip from "@/components/AvatarTooltip"
 import AvatarWithHoverCard from "@/components/AvatarWithHoverCard"
 import CardDiv from "@/components/CardDiv"
 import TextBasedContent from "@/components/TextBasedContent"
 import TooltipText from "@/components/TooltipText"
 import { GaugeCircle, Hash, Smile, Timer, Tractor, Users2 } from "lucide-react"
+import React from "react"
 
 const AverageLevel = () => {
   return (
@@ -23,41 +27,48 @@ const CadetToPiscinersRatio = () => {
   return (
     <div className="flex flex-col items-center w-full">
       <span className="inline-flex items-center text-xl font-black text-foreground/40 w-full">
-        <TooltipText content={<span className="text-4xl text-primary">20</span>} tooltip="Cadets"/>
+        <TooltipText content={<span className="text-4xl text-primary">20</span>} tooltip="Cadets" />
         &nbsp;:&nbsp;
-        <TooltipText content={<span className="text-4xl text-primary">1</span>} tooltip="Pisciners"/>
+        <TooltipText content={<span className="text-4xl text-primary">1</span>} tooltip="Pisciners" />
       </span>
     </div>
   )
 }
 
+type ActiveUserData = {
+  // id to userId
+  id: number,
+  login: string,
+  location: string,
+  full_name: string,
+  image: string
+}
+
+const getActiveUsers = async () => {
+  const res = await fetch(`/api/active_users`);
+  const resJson = await res.json();
+  return resJson;
+}
+
 const ActiveUsers = () => {
+
+  const [activeUsers, setActiveUsers] = React.useState<ActiveUserData[]>([]);
+
+  React.useEffect(() => {
+    const fetchData = async () => {
+      return await getActiveUsers()
+    }
+
+    fetchData().then((res) => {
+      setActiveUsers(res)
+    })
+  }, [])
+
   return (
     <div className="grid md:grid-cols-8 grid-cols-3 sm:grid-cols-4 gap-3">
-      <AvatarWithHoverCard src="https://github.com/shadcn.png" name="shadcn" content={<p>Hello</p>}/>
-      <AvatarWithHoverCard src="https://github.com/shadcn.png" name="shadcn" content={<p>Hello</p>}/>
-      <AvatarWithHoverCard src="https://github.com/shadcn.png" name="shadcn" content={<p>Hello</p>}/>
-      <AvatarWithHoverCard src="https://github.com/shadcn.png" name="shadcn" content={<p>Hello</p>}/>
-      <AvatarWithHoverCard src="https://github.com/shadcn.png" name="shadcn" content={<p>Hello</p>}/>
-      <AvatarWithHoverCard src="https://github.com/shadcn.png" name="shadcn" content={<p>Hello</p>}/>
-      <AvatarWithHoverCard src="https://github.com/shadcn.png" name="shadcn" content={<p>Hello</p>}/>
-      <AvatarWithHoverCard src="https://github.com/shadcn.png" name="shadcn" content={<p>Hello</p>}/>
-      <AvatarWithHoverCard src="https://github.com/shadcn.png" name="shadcn" content={<p>Hello</p>}/>
-      <AvatarWithHoverCard src="https://github.com/shadcn.png" name="shadcn" content={<p>Hello</p>}/>
-      <AvatarWithHoverCard src="https://github.com/shadcn.png" name="shadcn" content={<p>Hello</p>}/>
-      <AvatarWithHoverCard src="https://github.com/shadcn.png" name="shadcn" content={<p>Hello</p>}/>
-      <AvatarWithHoverCard src="https://github.com/shadcn.png" name="shadcn" content={<p>Hello</p>}/>
-      <AvatarWithHoverCard src="https://github.com/shadcn.png" name="shadcn" content={<p>Hello</p>}/>
-      <AvatarWithHoverCard src="https://github.com/shadcn.png" name="shadcn" content={<p>Hello</p>}/>
-      <AvatarWithHoverCard src="https://github.com/shadcn.png" name="shadcn" content={<p>Hello</p>}/>
-      <AvatarWithHoverCard src="https://github.com/shadcn.png" name="shadcn" content={<p>Hello</p>}/>
-      <AvatarWithHoverCard src="https://github.com/shadcn.png" name="shadcn" content={<p>Hello</p>}/>
-      <AvatarWithHoverCard src="https://github.com/shadcn.png" name="shadcn" content={<p>Hello</p>}/>
-      <AvatarWithHoverCard src="https://github.com/shadcn.png" name="shadcn" content={<p>Hello</p>}/>
-      <AvatarWithHoverCard src="https://github.com/shadcn.png" name="shadcn" content={<p>Hello</p>}/>
-      <AvatarWithHoverCard src="https://github.com/shadcn.png" name="shadcn" content={<p>Hello</p>}/>
-      <AvatarWithHoverCard src="https://github.com/shadcn.png" name="shadcn" content={<p>Hello</p>}/>
-      <AvatarWithHoverCard src="https://github.com/shadcn.png" name="shadcn" content={<p>Hello</p>}/>
+      {activeUsers.map((user, i) => (
+        <AvatarWithHoverCard src={user.image} intraName={user.login} name={user.login} content={<></>} />
+      ))}
     </div>
   )
 }
