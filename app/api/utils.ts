@@ -65,14 +65,26 @@ async function updateStudentsInfoDB() {
 }
 
 export async function getStudentsInfo() {
-  const content = fs.readFileSync('students.json');
-  const contentJson = JSON.parse(content)
-  // if (contentJson.created_at && !isMoreThanOneHourAgo(contentJson.created_at)) {
-  //   return contentJson.students
-  // }
+  try {
+    const content = fs.readFileSync('students.json');
+    const contentJson = JSON.parse(content)
+    return contentJson
+  } catch (err) {
+    return []
+  }
+}
 
-  // await updateStudentsInfoDB();
-  // return await contentJson()
+export async function getAllBHDays(year: number, month: number, all: boolean) {
+  const studentsInfo = await getStudentsInfo()
+  let students: Object[] = []
 
-  return contentJson
+  studentsInfo.forEach((student) => {
+    if (student.bh_days !== null) {
+      if (all || (student.cp_batch_year === year && student.cp_batch_month === month)) {
+        students.push(student)
+      }
+    }
+  })
+
+  return students
 }

@@ -1,20 +1,7 @@
 import { NextRequest, NextResponse } from "next/server";
-import { getAccessToken, isDateToday, getStudentsInfo } from "@/app/utils";
+import { getAccessToken, isDateToday, getStudentsInfo, getAllBHDays } from "@/app/api/utils";
 
-async function getAllBHDays(year: number, month: number, all: boolean) {
-  const studentsInfo = await getStudentsInfo()
-  let students: Object[] = []
 
-  studentsInfo.forEach((student) => {
-    if (student.bh_days !== null) {
-      if (all || (student.cp_batch_year === year && student.cp_batch_month === month)) {
-        students.push(student)
-      }
-    }
-  })
-
-  return students
-}
 
 export async function GET(
   req: NextRequest,

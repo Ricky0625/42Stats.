@@ -1,5 +1,5 @@
 import { NextRequest, NextResponse } from "next/server";
-import { getAccessToken, getStudentsInfo } from "@/app/utils";
+import { getAccessToken, getStudentsInfo } from "@/app/api/utils";
 
 function getNDaysAgoDate(n: number) {
   let date = new Date();
