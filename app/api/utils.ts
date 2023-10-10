@@ -16,6 +16,7 @@ export async function getAccessToken() {
   return resJson.access_token
 }
 
+
 export function isDateToday(dateString: string) {
   const inputDate = new Date(dateString);
 
@@ -26,13 +27,6 @@ export function isDateToday(dateString: string) {
          inputDate.getUTCFullYear() === today.getUTCFullYear();
 }
 
-function isMoreThanOneHourAgo(dateString: string) {
-  const oneHourInMillis = 3600 * 1000;
-  const dateObj = new Date(dateString);
-  const currentTime = new Date();
-
-  return (currentTime - dateObj) > oneHourInMillis;
-}
 
 async function getAll42KLLogins(access_token: string) {
   let all42KLLogins: string[] = []
@@ -56,17 +50,20 @@ async function getAll42KLLogins(access_token: string) {
   return all42KLLogins;
 }
 
-async function updateStudentsInfoDB() {
-  const access_token = await getAccessToken();
-  const all42KLLogins = getAll42KLLogins(access_token)
-  let toSerialize = {}
-
-
-}
 
 export async function getStudentsInfo() {
   try {
     const content = fs.readFileSync('students.json');
+    const contentJson = JSON.parse(content)
+    return contentJson
+  } catch (err) {
+    return []
+  }
+}
+
+export async function getProjectsInfo() {
+  try {
+    const content = fs.readFileSync('projects.json');
     const contentJson = JSON.parse(content)
     return contentJson
   } catch (err) {
