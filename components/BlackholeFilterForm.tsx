@@ -27,8 +27,9 @@ import { zodResolver } from "@hookform/resolvers/zod"
 import * as z from "zod"
 import { useForm } from "react-hook-form"
 import React from "react"
-import { BlackholeContext } from "@/app/blackhole/page"
 import { MONTH } from "./AvatarTooltip"
+import { BlackholeContext } from "@/app/blackhole/layout"
+import { Wrench } from "lucide-react"
 
 const formSchema = z.object({
   safeZoneMin: z.coerce.number().gte(10, { message: "Must be greater and equal to 10" }),
@@ -94,7 +95,7 @@ const BlackholeFilterForm = () => {
       <p className="text-foreground/40 font-semibold text-sm hidden md:block">MBHD: {bhCtx.mbhd}</p>
       <Dialog open={open} onOpenChange={setOpen}>
         <DialogTrigger asChild>
-          <Button variant="outline">Adjust parameters</Button>
+          <Button variant="outline"><Wrench size={16}/><span className="hidden md:block">&nbsp;Adjust parameters</span></Button>
         </DialogTrigger>
         <DialogContent className="sm:max-w-[500px]">
           <Form {...form}>

@@ -7,7 +7,7 @@ import TextBasedContent from "@/components/TextBasedContent"
 import TooltipText from "@/components/TooltipText"
 import { GaugeCircle, Hash, Smile, Timer, Tractor, Users2 } from "lucide-react"
 import React from "react"
-import { BatchData } from "./blackhole/page"
+import { ActiveUserData, BatchData } from "./blackhole/blackholeData"
 
 type AvgLevelData = {
   avg_level: number
@@ -81,19 +81,6 @@ const CadetToPiscinersRatio = () => {
   )
 }
 
-type ActiveUserData = {
-  login: string,
-  location: string,
-  full_name: string,
-  image: string,
-  wallet: number,
-  eval_pts: number,
-  level: number,
-  bh_days: number,
-  cp_batch_year: number,
-  cp_batch_month: number
-}
-
 const getActiveUsers = async (year?: number, month?: number) => {
   let URL = `/api/active_users`
 
@@ -134,54 +121,6 @@ const ActiveUsers = () => {
       </div>
   )
 }
-
-type ZombieData = {
-  id: number,
-  login: string,
-  full_name: string,
-  image: string,
-  eval_pts: number,
-  wallet: number,
-  location: string,
-  bh_days: number,
-  cp_batch_year: number,
-  cp_batch_month: number,
-  level: number,
-  login_time: number
-}
-
-const getZombies = async (n: number = 5) => {
-  const res = await fetch(`/api/login_time?n=${n}`);
-  const resJson = await res.json();
-  return resJson;
-}
-
-// const TopZombies = () => {
-
-//   const ovCtx = React.useContext(OverviewContext);
-//   const [zombies, setZombies] = React.useState<ZombieData[]>([]);
-
-//   React.useEffect(() => {
-//     const fetchData = async () => {
-//       return await getZombies()
-//     }
-
-//     fetchData().then((res) => {
-//       setZombies(res);
-//       console.log(res)
-//     })
-//   }, [ovCtx.batch])
-
-//   return (
-//     zombies.length === 0
-//       ? <p>No active users</p>
-//       : <div className="grid md:grid-cols-5 grid-cols-3 sm:grid-cols-4 gap-3">
-//         {zombies.map((user, i) => (
-//           <AvatarWithHoverCard key={`zombie${i}`} src={user.image} intraName={user.login} name={user.login} content={<></>} />
-//         ))}
-//       </div>
-//   )
-// }
 
 const statCards = [
   {

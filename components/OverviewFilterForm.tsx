@@ -27,6 +27,7 @@ import React from "react"
 import { BatchData, getALlBatch } from "./BlackholeFilterForm"
 import { MONTH } from "./AvatarTooltip"
 import { OverviewContext } from "@/app/page"
+import { Wrench } from "lucide-react"
 
 const formSchema = z.object({
   batch: z.string()
@@ -76,7 +77,7 @@ const OverviewFilterForm = () => {
       <p className="text-foreground/40 font-semibold text-sm hidden md:block">Batch: {ovCtx.batch.month === 0 && ovCtx.batch.year === 0 ? "All" : `${MONTH[ovCtx.batch.month - 1]} ${ovCtx.batch.year}`}</p>
       <Dialog open={open} onOpenChange={setOpen}>
         <DialogTrigger asChild>
-          <Button variant="outline">Adjust parameters</Button>
+          <Button variant="outline"><Wrench size={16}/><span className="">&nbsp;Adjust parameters</span></Button>
         </DialogTrigger>
         <DialogContent className="sm:max-w-[500px]">
           <Form {...form}>
