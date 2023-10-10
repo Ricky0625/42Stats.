@@ -31,9 +31,9 @@ export default function RootLayout({
           disableTransitionOnChange
         >
           <Header />
-          <div className='flex-1 mb-12'>
+          <main className='flex-1 mb-12'>
             {children}
-          </div>
+          </main>
           <Toaster />
           <Footer />
         </ThemeProvider>

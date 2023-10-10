@@ -7,7 +7,6 @@ import { zodResolver } from "@hookform/resolvers/zod"
 import {
   Form,
   FormControl,
-  FormDescription,
   FormField,
   FormItem,
   FormLabel,
@@ -23,6 +22,17 @@ const formSchema = z.object({
     .email("This is not a valid email.")
 })
 
+const notifyDesignatedEmail = async (email: string) => {
+  const res = await fetch(`/api/email_alert`, {
+    method: 'POST',
+    body: JSON.stringify({
+      email_to: email
+    })
+  });
+  const resJson = await res.json();
+  return resJson;
+}
+
 const NotifyEmail = () => {
 
   const { toast } = useToast()
@@ -35,10 +45,19 @@ const NotifyEmail = () => {
   })
 
   const onSubmit = (values: z.infer<typeof formSchema>) => {
-    return toast({
-      title: "Scheduled: Blackhole Alert",
-      description: `Sending an alert to ${values.email}...`,
+
+    const sendEmail = async () => {
+      return await notifyDesignatedEmail(values.email)
+    }
+
+    sendEmail().then(() => toast({
+      title: "Email sent!",
+      description: `Designated recipient is ${values.email}`,
     })
+    ).catch(() => toast({
+      variant: "destructive",
+      title: "Failed to send email!",
+    }))
   }
 
   return (
