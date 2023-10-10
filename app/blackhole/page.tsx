@@ -10,6 +10,7 @@ import React, { Suspense, useEffect } from "react"
 import Loading from "../loading"
 import { UserData } from "./blackholeData"
 import AvatarTooltip from "@/components/AvatarTooltip"
+import { ScrollArea } from "@/components/ui/scroll-area"
 
 type BlackholeState = {
   mbhd: number;
@@ -47,7 +48,7 @@ const BlackholeUsers = () => {
   }, [data])
 
   return (
-    <div className="grid grid-cols-2 md:grid-cols-1 gap-3">
+    <div className="grid grid-cols-1 md:grid-cols-1 gap-3">
       {toppers.map((user, i) => (
         <Ranking key={`${i}topper`} {...user} />
       ))}
@@ -73,13 +74,19 @@ const ZoneViewer = () => {
   }, [data, viewState])
 
   return (
-    users.length === 0
-      ? <div className="grid place-items-center min-h-full text-sm pt-6"><ThumbsUp />No one is in the {`${viewState === TextState.OK ? "safe" : viewState === TextState.WARNING ? "danger" : "dead"}`} zone.</div>
-      : <div className="grid grid-cols-4 sm:grid-cols-5 md:grid-cols-3 lg:grid-cols-4 gap-3">
-        {users.map((user, i) => (
-          <AvatarWithHoverCard key={`${i}danger`} src={user.image} name={user.login} intraName={user.login} content={<AvatarTooltip {...user} />} />
-        ))}
-      </div>
+    <Suspense fallback={<Loading />}>
+      {
+        users.length === 0
+          ? <div className="grid place-items-center min-h-full text-sm pt-6"><ThumbsUp />No one is in the {`${viewState === TextState.OK ? "safe" : viewState === TextState.WARNING ? "danger" : "dead"}`} zone.</div>
+          : <ScrollArea className="h-[600px] lg:h-[500px]">
+            <div className="grid grid-cols-4 sm:grid-cols-5 md:grid-cols-4 lg:grid-cols-6 gap-3">
+              {users.map((user, i) => (
+                <AvatarWithHoverCard key={`${i}danger`} src={user.image} name={user.login} intraName={user.login} content={<AvatarTooltip {...user} />} />
+              ))}
+            </div>
+          </ScrollArea>
+      }
+    </Suspense>
   )
 }
 
@@ -117,7 +124,7 @@ const statCards = [
     content: <BlackholeStatContent state={TextState.OK} />,
     footer: undefined,
     state: TextState.OK,
-    className: `col-span-1 md:row-start-1 row-span-1`
+    className: `col-span-1 md:max-h-28`
   },
   {
     title: "Danger Cadets",
@@ -126,7 +133,7 @@ const statCards = [
     content: <BlackholeStatContent state={TextState.WARNING} />,
     footer: undefined,
     state: TextState.WARNING,
-    className: `col-span-1 md:row-start-2 row-span-1`
+    className: `col-span-1 md:max-h-28`
   },
   {
     title: "Fallen Soldiers",
@@ -135,26 +142,28 @@ const statCards = [
     content: <BlackholeStatContent state={TextState.DESTRUCTIVE} />,
     footer: undefined,
     state: TextState.DESTRUCTIVE,
-    className: `col-span-1 md:row-start-3 row-span-1`
+    className: `col-span-1 md:max-h-28`
   },
 ]
 
 const blackholeList = [
   {
+    id: "ranking",
     title: "Blackhole Timer Toppers (TOP 10)",
     description: "Students who are on their journey into the Blackhole.",
     icon: <Orbit size={20} />,
     content: <BlackholeUsers />,
     footer: undefined,
-    className: `col-span-1 row-span-3 md:row-span-4 lg:col-span-2`
+    className: `col-span-2 md:col-span-1 lg:col-span-2 row-span-3 md:row-span-4 md:col-start-3`
   },
   {
+    id: "viewZone",
     title: "In Danger Zone",
     description: "Time's ticking, but hope remains for our comrades!",
     icon: <LandPlot size={20} />,
     content: <ZoneViewer />,
     footer: undefined,
-    className: `col-span-1 row-span-3 lg:col-span-2`
+    className: `col-span-2 row-span-3 lg:col-span-3 md:col-start-1 md:row-start-2`
   },
 ]
 
@@ -208,32 +217,30 @@ export default function Blackhole() {
           <h2 className="text-2xl md:text-3xl font-bold tracking-tight transition-colors first:mt-0">Blackhole</h2>
           <BlackholeFilterForm />
         </div>
-        <Suspense fallback={<Loading />}>
-          <div className="m-auto pt-6 grid sm:grid-cols-1 md:grid-cols-3 lg:grid-cols-5 grid-rows-9 md:grid-rows-6 lg:grid-rows-4 gap-4">
-            {statCards.map((stat, i) => (
-              <div className={stat.className + ` cursor-pointer`} key={i} onClick={() => setViewState(stat.state)}>
-                <CardDiv
-                  title={stat.title}
-                  description={stat.description}
-                  icon={stat.icon}
-                  content={stat.content}
-                  footer={stat.footer}
-                />
-              </div>
-            ))}
-            {blackholeList.map((stat, i) => (
-              <div className={stat.className} key={i}>
-                <CardDiv
-                  title={i === 0 ? stat.title : viewState === TextState.OK ? "In Safe Zone" : viewState === TextState.WARNING ? "In Danger Zone" : "In Dead Zone"}
-                  description={stat.description}
-                  icon={stat.icon}
-                  content={stat.content}
-                  footer={stat.footer}
-                />
-              </div>
-            ))}
-          </div>
-        </Suspense>
+        <div className="m-auto pt-6 grid grid-cols-2 md:grid-cols-3 lg:grid-cols-5 auto-rows-max gap-4">
+          {statCards.map((stat, i) => (
+            <a className={stat.className + ` cursor-pointer group`} key={i} onClick={() => setViewState(stat.state)} href="#viewZone">
+              <CardDiv
+                title={stat.title}
+                description={stat.description}
+                icon={stat.icon}
+                content={stat.content}
+                footer={stat.footer}
+              />
+            </a>
+          ))}
+          {blackholeList.map((stat, i) => (
+            <div className={stat.className} key={i} id={stat.id}>
+              <CardDiv
+                title={i === 0 ? stat.title : viewState === TextState.OK ? "In Safe Zone" : viewState === TextState.WARNING ? "In Danger Zone" : "In Dead Zone"}
+                description={stat.description}
+                icon={stat.icon}
+                content={stat.content}
+                footer={stat.footer}
+              />
+            </div>
+          ))}
+        </div>
       </div>
     </BlackholeContext.Provider>
   )
