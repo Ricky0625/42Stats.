@@ -8,6 +8,7 @@ import { BlackholeContext } from "./layout"
 import BlackholeOverview from "./BlackholeOverview"
 import TabGroups from "@/components/TabGroup"
 import NotifyEmail from "@/components/NotifyEmail"
+import BlackholeAnalysis from "./BlackholeAnalysis"
 
 const getBlackholeUsers = async (year?: number, month?: number) => {
   let URL = `/api/blackhole`
@@ -64,7 +65,7 @@ export default function Blackhole() {
         </div>
         <TabGroups
           tabNames={["Overview", "Analysis"]}
-          tabContents={[<BlackholeOverview />, <></>]}
+          tabContents={[<BlackholeOverview />, <BlackholeAnalysis />]}
         />
       </div>
     </BlackholeContext.Provider>

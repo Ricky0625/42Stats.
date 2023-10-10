@@ -1,5 +1,6 @@
 import { TextState } from "@/components/TextBasedContent";
-import { BatchData } from "./blackholeData";
+import { BatchData, BlackholeState } from "./blackholeData";
+import React from "react";
 
 
 export const BlackholeContext = React.createContext<BlackholeState>({

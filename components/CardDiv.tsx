@@ -29,7 +29,7 @@ const CardDiv = ({
         </span>
         {description === undefined || <CardDescription className="hidden lg:block">{description}</CardDescription>}
       </CardHeader>
-      <CardContent className="flex-1 overflow-y-scroll">
+      <CardContent className="flex-1">
         {content}
       </CardContent>
       {footer === undefined || <CardFooter>{footer}</CardFooter>}
