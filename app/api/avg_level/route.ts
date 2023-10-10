@@ -1,5 +1,5 @@
 import { NextRequest, NextResponse } from "next/server";
-import { getAccessToken, getStudentsInfo } from "@/app/utils";
+import { getAccessToken, getStudentsInfo } from "@/app/api/utils";
 
 async function getAvgLevelByBatch(year: number, month: number, all: boolean) {
   const studentsInfo = await getStudentsInfo()

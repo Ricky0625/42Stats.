@@ -1,5 +1,5 @@
 import { NextRequest, NextResponse } from "next/server";
-import { getAccessToken, getStudentsInfo } from "@/app/utils";
+import { getAccessToken, getStudentsInfo } from "@/app/api/utils";
 
 async function getActiveUsersByBatch(activeUsersInfo: Object[], year: number, month: number, all: boolean) {
   const allStudentsInfo = await getStudentsInfo()

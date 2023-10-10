@@ -1,4 +1,4 @@
-import { getStudentsInfo } from "@/app/utils";
+import { getStudentsInfo } from "@/app/api/utils";
 import { NextRequest, NextResponse } from "next/server";
 
 async function getAllBatches() {
