@@ -1,7 +1,7 @@
 # Logs
 logs
 *.log
-npm-debug.log*
+npm-debug.log*  
 
 # Runtime data
 pids
@@ -41,3 +41,4 @@ jspm_packages
 emailAlert.json
 students.json
 projects.json
+xp_history.json
