@@ -7,22 +7,22 @@ export async function GET(
   req: NextRequest,
 ) {
   const searchParams = req.nextUrl.searchParams
-  let year = 0;
-  let month = 0;
-  let all = true;
-  const yearStr: string = searchParams.get('batch_year')
-  const monthStr: string = searchParams.get('batch_month')
-  if (yearStr !== null && monthStr !== null) {
-    all = false;
-    try {
-      year = parseInt(yearStr)
-      month = parseInt(monthStr)
-    } catch (err) {
-      return NextResponse.json({'error': 'Invalid params'}, { status: 400 })
+  let batchYear: number | null = null;
+  let batchMonth: number | null = null;
+  const batchYearStr: string | null = searchParams.get('batch_year')
+  const batchMonthStr: string | null = searchParams.get('batch_month')
+  if (batchYearStr !== null && batchMonthStr !== null) {
+    batchYear = parseInt(batchYearStr)
+    if (batchYear !== batchYear) {
+      return NextResponse.json({error: 'Invalid param batch_year'}, { status: 400 })
+    }
+    batchMonth = parseInt(batchMonthStr)
+    if (batchMonth !== batchMonth) {
+      return NextResponse.json({error: 'Invalid param batch_month'}, { status: 400 })
     }
   }
 
-  const allBHDays = await getAllBHDays(year, month, all);
+  const allBHDays = await getAllBHDays(batchYear, batchMonth);
 
   return NextResponse.json(allBHDays, { status: 200 });
 }
