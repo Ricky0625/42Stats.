@@ -51,6 +51,28 @@ function getBatchAvgXPTimeline(student: any, batchStudents: any[]) {
 }
 
 
+function fillDateGaps(arr: any[]) {
+  for (let i = 0; i < arr.length - 1; i++) {
+    let currentDate = new Date(arr[i].date);
+    let nextDate = new Date(arr[i + 1].date);
+
+    // Check if the next date is not one month after the current date
+    let expectedNextDate = new Date(currentDate);
+    expectedNextDate.setMonth(expectedNextDate.getMonth() + 1);
+
+    while (expectedNextDate < nextDate) {
+      let formattedDate = `${expectedNextDate.getFullYear()}-${String(expectedNextDate.getMonth() + 1).padStart(2, '0')}-01`;
+      arr.splice(i + 1, 0, {
+        xp: arr[i].xp,
+        date: formattedDate
+      });
+      i++; // Move the pointer due to the newly added date
+      expectedNextDate.setMonth(expectedNextDate.getMonth() + 1);
+    }
+}
+}
+
+
 function getStudentXpTimeline(student: any) {
   let studentXpTimeline: any = []
   student.xp_timeline.forEach((xptl: any) => {
@@ -78,6 +100,8 @@ function getStudentXpTimeline(student: any) {
       studentXpTimeline[i].xp += studentXpTimeline[i - 1].xp
     }
   }
+
+  fillDateGaps(studentXpTimeline)
 
   return studentXpTimeline
 }
