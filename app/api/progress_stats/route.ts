@@ -6,12 +6,12 @@ function getMonth1stFromDatestring(dateString: string) {
   return dateString.slice(0, 7) + '-01';
 }
 
-function getBatchAvgXPTimeline(student: any, batchStudents: any[]) {
+function getBatchAvgXPTimeline(student: any | null, batchStudents: any[]) {
   let numStudentsInBatch = 0;
   let batchAvgXpTimeline: any[] = []
 
   batchStudents.forEach((s: any) => {
-    if (s.id !== student.id) {
+    if (student == null || s.id !== student.id) {
       if (s.xp_timeline) {
         numStudentsInBatch++;
         s.xp_timeline.forEach((xptl: any) => {
@@ -110,7 +110,7 @@ function getStudentXpTimeline(student: any) {
 }
 
 
-async function getProgressStats(login: string) {
+async function getProgressStatsByLogin(login: string) {
   const studentsInfo = await getStudentsInfo()
 
   const student = studentsInfo.find((s: any) => {
@@ -145,25 +145,95 @@ async function getProgressStats(login: string) {
 }
 
 
+async function getProgressStatsByBatch(batchYear1: number, batchMonth1: number, batchYear2: number, batchMonth2: number) {
+  const studentsInfo = await getStudentsInfo()
+
+  
+  const batch1Students = studentsInfo.filter((s: any) => {
+    return s.cp_batch_year === batchYear1 && s.cp_batch_month === batchMonth1;
+  });
+
+  const batch2Students = studentsInfo.filter((s: any) => {
+    return s.cp_batch_year === batchYear2 && s.cp_batch_month === batchMonth2;
+  });
+
+  if (batch1Students === undefined || batch2Students === undefined) {
+    return {
+      error: "Invalid batch!"
+    }
+  }
+  
+  const batch1AvgXpTimeline = getBatchAvgXPTimeline(null, batch1Students)
+  const batch2AvgXpTimeline = getBatchAvgXPTimeline(null, batch2Students)
+
+  
+
+  return {
+    batch1_avg_xp_timeline: batch1AvgXpTimeline,
+    batch2_avg_xp_timeline: batch2AvgXpTimeline
+  }
+}
+
+
 export async function GET(
   req: NextRequest,
 ) {
   const searchParams = req.nextUrl.searchParams
-  const login: string | null = searchParams.get('login')
+  let compBy: string | null = searchParams.get('comp_by')
 
-  if (login === null) {
-    return NextResponse.json({error: 'Invalid login'}, {status: 400})
+  if (compBy === null) {
+    compBy = 'login'
   }
 
-  try {
-    const studentsProgress = await getProgressStats(login);
-    if (studentsProgress.error) {
-      return NextResponse.json(studentsProgress, { status: 400 })
+  if (compBy !== 'login' && compBy !== 'batch') {
+    return NextResponse.json({error: 'Invalid Comparing method!'}, { status: 400 })
+  }
+
+  if (compBy === 'login') {
+    const login: string | null = searchParams.get('login')
+    if (login === null) {
+      return NextResponse.json({ error: 'No login provided!'}, { status: 400 })
     }
-    return NextResponse.json(studentsProgress, { status: 200 });
-  } catch (err) {
-    console.log(err)
-    return NextResponse.json({error: 'Invalid login'}, { status: 400 })
+
+    try {
+      const studentsProgress = await getProgressStatsByLogin(login);
+      if (studentsProgress.error) {
+        return NextResponse.json(studentsProgress, { status: 400 })
+      }
+      return NextResponse.json(studentsProgress, { status: 200 });
+    } catch (err) {
+      return NextResponse.json({error: 'Invalid login'}, { status: 400 })
+    }
+  } else if (compBy === 'batch') {
+    let batchYear1: number = parseInt(searchParams.get('batch_year1'));
+    if (batchYear1 !== batchYear1) {
+      return NextResponse.json({error: 'Invalid param batch_year'}, { status: 400 })
+    }
+    let batchMonth1: number = parseInt(searchParams.get('batch_month1'));
+    if (batchMonth1 !== batchMonth1) {
+      return NextResponse.json({error: 'Invalid param batch_month'}, { status: 400 })
+    }
+
+    let batchYear2: number = parseInt(searchParams.get('batch_year2'));
+    if (batchYear2 !== batchYear2) {
+      return NextResponse.json({error: 'Invalid param batch_year'}, { status: 400 })
+    }
+    let batchMonth2: number = parseInt(searchParams.get('batch_month2'));
+    if (batchMonth2 !== batchMonth2) {
+      return NextResponse.json({error: 'Invalid param batch_month'}, { status: 400 })
+    }
+
+    try {
+      const batchsProgress = await getProgressStatsByBatch(batchYear1, batchMonth1, batchYear2, batchMonth2);
+      if (batchsProgress.error) {
+        return NextResponse.json(batchsProgress, { status: 400 })
+      }
+      return NextResponse.json(batchsProgress, { status: 200 });
+    } catch (err) {
+      return NextResponse.json({error: 'Invalid login'}, { status: 400 })
+    }
+  } else {
+    return NextResponse.json({error: 'Invalid Comparing method!'}, { status: 400 })
   }
 
 }
