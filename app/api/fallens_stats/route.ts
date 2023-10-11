@@ -1,23 +1,16 @@
 import { NextRequest, NextResponse } from "next/server";
 import { getAllBHDays } from "../utils";
 
-type FallenStatsType = {
-  validated_last: any[]
-  failed_last: any[]
-  never_started: number
-  end_levels_stats: any[]
-  average_end_level: number
-}
 
 async function getFallensStats(topN: number | null) {
   // validated last
   // failed last
   // didn't even start (level 0)
 
-  let fallensStats: FallenStatsType = {
+  let fallensStats: any = {
     validated_last: [],
     failed_last: [],
-    never_started: 0,
+    never_started: [],
     end_levels_stats: [],
     average_end_level: 0
   }
@@ -29,7 +22,7 @@ async function getFallensStats(topN: number | null) {
 
   fallens.forEach((fallen: any) => {
     if (fallen.cp_level === 0) {
-      fallensStats.never_started++;
+      fallensStats.never_started.push(fallen);
     } else if (fallen.last_project_before_fall.validated === false) {
       // if failed last project subscribed
       const projectFailedName = fallen.last_project_before_fall.name
@@ -39,11 +32,11 @@ async function getFallensStats(topN: number | null) {
 
       if (project !== undefined) {
         // if project exists in the array
-        project.logins.push(fallen.login)
+        project.students.push(fallen)
       } else {
         fallensStats.failed_last.push({
           name: projectFailedName,
-          logins: [fallen.login]
+          students: [fallen]
         })
       }
     } else if (fallen.last_project_before_fall.validated === true) {
@@ -55,11 +48,11 @@ async function getFallensStats(topN: number | null) {
 
       if (project !== undefined) {
         // if project exists in the array
-        project.logins.push(fallen.login)
+        project.students.push(fallen)
       } else {
         fallensStats.validated_last.push({
           name: projectValidatedName,
-          logins: [fallen.login]
+          students: [fallen]
         })
       }
     }
@@ -70,11 +63,11 @@ async function getFallensStats(topN: number | null) {
     })
 
     if (endLevelStat !== undefined) {
-      endLevelStat.count++;
+      endLevelStat.students.push(fallen);
     } else {
       fallensStats.end_levels_stats.push({
         level: endLevel,
-        count: 1
+        students: [fallen]
       })
     }
 
@@ -91,12 +84,12 @@ async function getFallensStats(topN: number | null) {
   if (topN !== null) {
     // sort and slice the top N
     fallensStats.validated_last.sort((p1, p2) => {
-      return p2.logins.length - p1.logins.length
+      return p2.students.length - p1.students.length
     })
     fallensStats.validated_last = fallensStats.validated_last.slice(0, topN)
 
     fallensStats.failed_last.sort((p1, p2) => {
-      return p2.logins.length - p1.logins.length
+      return p2.students.length - p1.students.length
     })
     fallensStats.failed_last = fallensStats.failed_last.slice(0, topN)
   }
