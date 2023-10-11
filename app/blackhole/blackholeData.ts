@@ -1,26 +1,34 @@
 import { TextState } from "@/components/TextBasedContent";
 
-export type ProjectData = {
-  id: number,
+export interface CurrProject {
+  id: number
   name: string
 }
 
-export type UserData = {
-  active: boolean;
-  bh_days: number;
-  cp_batch_month: number;
-  cp_batch_year: number;
-  cp_level: number;
-  curr_projects: ProjectData[];
-  email: string;
-  eval_pts: number;
-  full_name: string;
-  image: string;
-  login: string;
-  ps_batch_month: number;
-  ps_batch_year: number;
-  ps_level: number;
-  wallet: number;
+export interface LastProjectBeforeFall {
+  id: number
+  name: string
+  validated: boolean
+  score: number
+}
+
+export interface StudentData {
+  login: string
+  full_name: string
+  email: string
+  image?: string
+  eval_pts: number
+  wallet: number
+  active: boolean
+  bh_days?: number
+  last_project_before_fall?: LastProjectBeforeFall
+  ps_batch_year?: number
+  ps_batch_month?: number
+  ps_level?: number
+  curr_projects: CurrProject[]
+  cp_batch_year?: number
+  cp_batch_month?: number
+  cp_level?: number
 }
 
 export type BatchData = {
@@ -31,11 +39,15 @@ export type BatchData = {
 export type BlackholeState = {
   mbhd: number;
   setMbhd(mbhd: number): void;
-  data: UserData[];
+  data: StudentData[];
   batch: BatchData
   setBatch(batch: BatchData): void;
   viewState: TextState;
   setViewState(state: TextState): void;
+}
+
+export type BlackholeFallenStatState = {
+  fallenStats: FallenStats
 }
 
 export type ActiveUserData = {
@@ -49,4 +61,22 @@ export type ActiveUserData = {
   bh_days: number,
   cp_batch_year: number,
   cp_batch_month: number
+}
+
+export type LastProjectStat = {
+  name: string,
+  students: StudentData[],
+}
+
+export type EndLevelCount = {
+  level: number
+  students: StudentData[]
+}
+
+export type FallenStats = {
+  average_end_level: number,
+  end_levels_stats: EndLevelCount[],
+  failed_last: LastProjectStat[],
+  validated_last: LastProjectStat[],
+  never_started: StudentData[],
 }

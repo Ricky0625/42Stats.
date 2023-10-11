@@ -1,38 +1,110 @@
 import CardDiv from "@/components/CardDiv"
 import TabGroups from "@/components/TabGroup"
 import TextBasedContent, { TextState } from "@/components/TextBasedContent"
-import LineChartGraph from "@/components/graphs/LineChartGraph"
+import BarChartGraph from "@/components/graphs/BarChartGraph"
 import { FolderOpenDot, LineChart, Skull, Sword } from "lucide-react"
+import React from "react"
+import { FallenStats, LastProjectStat } from "./blackholeData"
+import { toast } from "@/components/ui/use-toast"
+import { BlackholeAnalysisContext, defaultFallenStat } from "./BlackholeContext"
+import TooltipText from "@/components/TooltipText"
 
-const labels = ["lvl.1", "lvl.2", "lvl.3", "lvl.4", "lvl.5", "lvl.6", "lvl.7", "lvl.8", "lvl.9", "lvl.10"]
-
-const data = {
-  labels,
-  datasets: [
-    {
-      label: 'Cadet Level',
-      data: [20, 4, 26, 15, 25, 66, 36, 12, 8, 2, 0],
-      borderColor: '#61BC66',
-      backgroundColor: '#61BC66AA',
-    },
-  ],
+const getCadetEndLevelAfterBlackholed = async () => {
+  const res = await fetch(`/api/fallens_stats`);
+  const resJson = await res.json();
+  return resJson;
 }
 
-const options = {
-  responsive: true,
-  fill: true,
-  maintainAspectRatio: false,
-  plugins: {
-    legend: {
-      position: 'top' as const,
-      onClick: () => {},
-    },
-  },
+const DeadlistProject = () => {
+  const bhAnalysisCtx = React.useContext(BlackholeAnalysisContext);
+  const [deadliest, setDeadliest] = React.useState<LastProjectStat>({
+    name: "",
+    students: []
+  });
+
+  React.useEffect(() => {
+    const { failed_last, validated_last } = bhAnalysisCtx.fallenStats;
+
+    if (!(failed_last.length || validated_last.length))
+      return;
+
+    const allFailedProjects: LastProjectStat[] = [...failed_last, ...validated_last]
+    let deadliestProject: LastProjectStat = allFailedProjects[0]
+
+    for (const project of allFailedProjects) {
+      if (project.students.length > deadliestProject.students.length)
+        deadliestProject = project;
+    }
+    setDeadliest(deadliestProject);
+  }, [bhAnalysisCtx])
+
+  return (
+    <div className="flex flex-col space-y-3">
+      <TextBasedContent content={deadliest.name} state={TextState.DESTRUCTIVE} />
+      <p className="text-foreground/40 font-semibold text-sm">Harmed <span className="font-black animate-pulse text-destructive">{deadliest.students.length}</span> Cadets</p>
+    </div>
+  )
+}
+
+const SpawnKill = () => {
+
+  const bhAnalysisCtx = React.useContext(BlackholeAnalysisContext);
+  const [spawnKillCount, setSpawnKillCount] = React.useState<number>(0);
+
+  React.useEffect(() => {
+    const { never_started } = bhAnalysisCtx.fallenStats;
+    setSpawnKillCount(never_started.length);
+  }, [bhAnalysisCtx])
+
+  return (
+    <div className="flex flex-col space-y-3">
+      <TextBasedContent content={spawnKillCount.toString()} state={TextState.DESTRUCTIVE} />
+      <p className="text-foreground/40 font-semibold text-sm">Cadets fallen into blackhole at Lvl.0</p>
+    </div>
+  )
+}
+
+const EndLevelBarChart = () => {
+
+  const bhAnalysisCtx = React.useContext(BlackholeAnalysisContext);
+  const [endLevelData, setEndLevelData] = React.useState<{
+    labels: string[]
+    datasets: object[]
+  }>({
+    labels: [],
+    datasets: []
+  })
+
+  React.useEffect(() => {
+    const graphLabels: string[] = [];
+    const dataValues: any[] = [];
+    const datasets: object[] = [];
+    const fallens_stats = bhAnalysisCtx.fallenStats;
+
+    fallens_stats.end_levels_stats.forEach((stat) => {
+      graphLabels.push(`lvl.${stat.level}`);
+      dataValues.push(stat.students.length);
+    })
+
+    datasets.push({
+      label: "Count",
+      data: dataValues,
+      borderColor: '#22C55E',
+      backgroundColor: '#22C55E'
+    })
+
+    setEndLevelData({
+      labels: graphLabels,
+      datasets: datasets
+    })
+  }, [bhAnalysisCtx])
+
+  return (<BarChartGraph data={endLevelData} />)
 }
 
 const FinalProjectList = () => {
   return (
-    <TabGroups tabNames={["Validated", "Did not validated"]} tabContents={[<></>,<></>]}/>
+    <TabGroups tabNames={["Validated", "Did not validated"]} tabContents={[<></>, <></>]} />
   )
 }
 
@@ -41,21 +113,21 @@ const statCards = [
     title: "Deadliest Project",
     description: undefined,
     icon: <Skull size={20} />,
-    content: <TextBasedContent content="Libft" state={TextState.DESTRUCTIVE} />,
+    content: <DeadlistProject />,
     className: `col-span-1`
   },
   {
     title: "Blackhole Spawn-Kills",
     description: undefined,
     icon: <Sword size={20} />,
-    content: <TextBasedContent content="42" state={TextState.DESTRUCTIVE} />,
+    content: <SpawnKill />,
     className: `col-span-1`
   },
   {
-    title: "Before the Blackhole: Cadet Levels",
+    title: "Count of Cadets by End Level before Blackhole",
     description: undefined,
     icon: <LineChart size={20} />,
-    content: <LineChartGraph options={options} data={data} />,
+    content: <EndLevelBarChart />,
     className: `col-span-2 lg:col-span-3`
   },
   {
@@ -68,19 +140,38 @@ const statCards = [
 ]
 
 const BlackholeAnalysis = () => {
+
+  const [fallenStats, setFallenStats] = React.useState<FallenStats>(defaultFallenStat);
+
+  React.useEffect(() => {
+    const fetchData = async () => {
+      return await getCadetEndLevelAfterBlackholed();
+    }
+
+    fetchData().then((res) => {
+      setFallenStats(res);
+    }).catch(() => toast({
+      title: "Failed to load data!",
+    }))
+  }, [])
+
   return (
-    <div className="m-auto pt-3 grid grid-cols-2 md:grid-cols-2 lg:grid-cols-5 md:grid-rows-3 gap-4">
-      {statCards.map((stat, i) => (
-        <div className={stat.className}>
-          <CardDiv
-            title={stat.title}
-            description={stat.description}
-            icon={stat.icon}
-            content={stat.content}
-          />
-        </div>
-      ))}
-    </div>
+    <BlackholeAnalysisContext.Provider value={{
+      fallenStats: fallenStats
+    }}>
+      <div className="m-auto pt-3 grid grid-cols-2 md:grid-cols-2 lg:grid-cols-5 md:grid-rows-3 gap-4">
+        {statCards.map((stat, i) => (
+          <div className={stat.className} key={`${stat.title}_${i}`}>
+            <CardDiv
+              title={stat.title}
+              description={stat.description}
+              icon={stat.icon}
+              content={stat.content}
+            />
+          </div>
+        ))}
+      </div>
+    </BlackholeAnalysisContext.Provider>
   )
 }
 
