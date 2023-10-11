@@ -18,7 +18,7 @@ export async function GET(
       year = parseInt(yearStr)
       month = parseInt(monthStr)
     } catch (err) {
-      NextResponse.json({'error': 'Invalid params'}, { status: 400 })
+      return NextResponse.json({'error': 'Invalid params'}, { status: 400 })
     }
   }
 
