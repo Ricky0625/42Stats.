@@ -47,6 +47,9 @@ function getBatchAvgXPTimeline(student: any, batchStudents: any[]) {
     batchAvgXpTimeline[i].xp = Math.round(batchAvgXpTimeline[i].xp / numStudentsInBatch);
   }
 
+  fillDateGaps(batchAvgXpTimeline)
+
+
   return batchAvgXpTimeline
 }
 
