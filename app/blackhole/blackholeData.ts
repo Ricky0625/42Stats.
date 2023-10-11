@@ -1,4 +1,5 @@
 import { TextState } from "@/components/TextBasedContent";
+import { XpTimeline } from "../milestone/MilestoneData";
 
 export interface CurrProject {
   id: number
@@ -29,6 +30,7 @@ export interface StudentData {
   cp_batch_year?: number
   cp_batch_month?: number
   cp_level?: number
+  xp_timeline: XpTimeline[]
 }
 
 export type BatchData = {

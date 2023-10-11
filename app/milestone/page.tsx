@@ -9,6 +9,7 @@ import Link from 'next/link'
 import React from "react"
 import { MilestoneData } from "./MilestoneData"
 import { StudentData } from "../blackhole/blackholeData"
+import { toast } from "@/components/ui/use-toast"
 
 type MilestoneState = {
   login: string,
@@ -26,9 +27,9 @@ const StudentInfoCard = () => {
 
   const milestoneCtx = React.useContext(MilestoneContext);
   const [student, setStudent] = React.useState<StudentData>({});
-  
+
   React.useEffect(() => {
-    const { milestoneData } = milestoneCtx; 
+    const { milestoneData } = milestoneCtx;
     if (milestoneData === undefined) return;
     const { student } = milestoneData as MilestoneData
     if (student === undefined) return;
@@ -65,6 +66,69 @@ const optionsDef = {
   }
 }
 
+const ProgressGraph = () => {
+
+  const milestoneCtx = React.useContext(MilestoneContext);
+  const { milestoneData } = milestoneCtx;
+  const [progressData, setProgressData] = React.useState<{
+    labels: string[]
+    datasets: object[]
+  }>({
+    labels: [],
+    datasets: []
+  })
+
+  React.useEffect(() => {
+    const {batch_avg_xp_timeline, student } = (milestoneData as MilestoneData);
+    const avgValues: object[] = []
+    const studValues: object[] = []
+    const datasets: object[] = []
+
+    if (batch_avg_xp_timeline === undefined || student === undefined) return;
+
+    const { xp_timeline } = student;
+
+    if (xp_timeline === undefined) return;
+
+    batch_avg_xp_timeline.forEach((data) => {
+      avgValues.push({
+        x: data.date,
+        y: data.xp
+      })
+    })
+
+    xp_timeline.forEach((data) => {
+      studValues.push({
+        x: data.date,
+        y: data.xp
+      })
+    })
+    
+    datasets.push({
+      label: "Batch Average Student XP Total",
+      data: avgValues,
+      borderColor: '#6D28D9',
+      backgroundColor: '#6D28D9'
+    })
+
+    datasets.push({
+      label: "Student XP Total",
+      data: studValues,
+      borderColor: '#EA580C',
+      backgroundColor: '#EA580C'
+    })
+
+    setProgressData({
+      labels: [],
+      datasets: datasets
+    })
+  }, [milestoneCtx])
+
+  return (
+    <LineChartGraph options={optionsDef} data={progressData} />
+  );
+}
+
 const statCards = [
   {
     title: "Student",
@@ -77,7 +141,7 @@ const statCards = [
     title: "Progress",
     description: undefined,
     icon: <LineChart size={20} />,
-    content: <LineChartGraph data={{ labels: [1, 2, 3, 4], datasets: [] }} />,
+    content: <ProgressGraph />,
     className: `col-span-2`
   },
 ]
@@ -101,13 +165,16 @@ export default function MileStone() {
     }
 
     fetchData().then(res => {
+      if (res === undefined) return
+      if (res.error !== undefined) {
+        return toast({
+          title: "User not found!",
+          description: `${login} does not exists!`,
+        })
+      }
       setMilestoneData(res)
-    });
+    })
   }, [login])
-
-  React.useEffect(() => {
-    console.log(milestoneData);
-  }, [milestoneData])
 
   return (
     <MilestoneContext.Provider value={{
