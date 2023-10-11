@@ -2,7 +2,7 @@
 
 import BlackholeFilterForm from "@/components/BlackholeFilterForm"
 import { TextState } from "@/components/TextBasedContent"
-import React from "react"
+import React, { useContext } from "react"
 import { BatchData } from "./blackholeData"
 import { BlackholeContext } from "./layout"
 import BlackholeOverview from "./BlackholeOverview"
@@ -34,15 +34,14 @@ export default function Blackhole() {
     month: 0,
     year: 0,
   });
+  const bhCtx = useContext(BlackholeContext);
 
   React.useEffect(() => {
     const fetchData = async () => {
       return await getBlackholeUsers(batch.year, batch.month)
     }
 
-    fetchData().then((res) => {
-      setData(res)
-    })
+    fetchData().then(res => setData(res))
   }, [mbhd, batch])
 
   return (
@@ -65,7 +64,7 @@ export default function Blackhole() {
         </div>
         <TabGroups
           tabNames={["Overview", "Analysis"]}
-          tabContents={[<BlackholeOverview />, <BlackholeAnalysis />]}
+          tabContents={[<BlackholeOverview />, <BlackholeAnalysis batch={batch} />]}
         />
       </div>
     </BlackholeContext.Provider>

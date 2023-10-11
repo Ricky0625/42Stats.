@@ -48,6 +48,11 @@ export type BlackholeState = {
 
 export type BlackholeFallenStatState = {
   fallenStats: FallenStats
+  selectedProject: string
+  setSelectedProject: (proj: string) => void
+  selectedTab: string
+  setSelectedTab: (tab: string) => void
+  batch: BatchData
 }
 
 export type ActiveUserData = {
