@@ -22,7 +22,18 @@ ChartJS.register(
   Legend
 );
 
-const LineChartGraph = ({ options = {}, data }: GraphProps) => {
+const optionsDef = {
+  responsive: true,
+  fill: true,
+  maintainAspectRatio: false,
+  plugins: {
+    legend: {
+      position: 'top' as const,
+    },
+  },
+}
+
+const LineChartGraph = ({ options = optionsDef, data }: GraphProps) => {
   return <Line options={options} data={data} />;
 }
 

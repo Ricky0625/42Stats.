@@ -4,13 +4,13 @@ const AvatarPic = ({
   src,
   name
 }: {
-  src: string,
-  name: string,
+  src?: string,
+  name?: string,
 }) => {
   return (
     <Avatar>
       <AvatarImage src={src} alt={`@${name}`} className=" object-cover"/>
-      <AvatarFallback>{name.slice(0,2).toUpperCase()}</AvatarFallback>
+      {name !== undefined && <AvatarFallback>{name.slice(0,2).toUpperCase()}</AvatarFallback>}
     </Avatar>
   )
 }

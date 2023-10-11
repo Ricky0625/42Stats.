@@ -23,6 +23,7 @@ import { BatchData, getALlBatch } from "./BlackholeFilterForm"
 import { OverviewContext } from "@/app/page"
 import { Search } from "lucide-react"
 import { Input } from "./ui/input"
+import { MilestoneContext } from "@/app/milestone/page"
 
 const formSchema = z.object({
   login: z.string().min(1)
@@ -30,7 +31,8 @@ const formSchema = z.object({
 
 const MilestoneForm = () => {
 
-  const [open, setOpen] = React.useState(false)
+  const [open, setOpen] = React.useState(false);
+  const milestoneCtx = React.useContext(MilestoneContext);
 
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
@@ -40,13 +42,9 @@ const MilestoneForm = () => {
   })
 
   const onSubmit = (values: z.infer<typeof formSchema>) => {
-    console.log(values)
+    milestoneCtx.setLogin(values.login);
     setOpen(false)
   }
-
-  React.useEffect(() => {
-
-  }, [])
 
   return (
     <div className="flex flex-row justify-between items-center space-x-4">
