@@ -52,7 +52,7 @@ async function sendEmail(emailTo: string, content: string) {
 }
 
 async function emailAlert(emailTo: string) {
-  const bh_days = await getAllBHDays(0, 0, true);
+  const bh_days = await getAllBHDays(null, null);
   const inDanger = bh_days.filter((student) => student.bh_days < 10 && student.bh_days >= 0)
   let emailContent = ''
   inDanger.forEach((student) => {

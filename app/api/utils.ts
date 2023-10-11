@@ -71,13 +71,13 @@ export async function getProjectsInfo() {
   }
 }
 
-export async function getAllBHDays(year: number, month: number, all: boolean) {
+export async function getAllBHDays(year: number | null, month: number | null) {
   const studentsInfo = await getStudentsInfo()
   let students: Object[] = []
 
-  studentsInfo.forEach((student) => {
+  studentsInfo.forEach((student : any) => {
     if (student.bh_days !== null) {
-      if (all || (student.cp_batch_year === year && student.cp_batch_month === month)) {
+      if ((year === null && month === null) || (student.cp_batch_year === year && student.cp_batch_month === month)) {
         students.push(student)
       }
     }
