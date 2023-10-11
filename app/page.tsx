@@ -101,7 +101,7 @@ const ActiveUsers = () => {
   const ovCtx = React.useContext(OverviewContext);
   const [activeUsers, setActiveUsers] = React.useState<ActiveUserData[]>([]);
 
-  React.useEffect(() => {
+ React.useEffect(() => {
     const fetchData = async () => {
       return await getActiveUsers(ovCtx.batch.year, ovCtx.batch.month)
     }

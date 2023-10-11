@@ -85,3 +85,20 @@ export async function getAllBHDays(year: number, month: number, all: boolean) {
 
   return students
 }
+
+
+export async function getCadetProjects(year: number, month: number, all: boolean) {
+  const studentsInfo = await getStudentsInfo()
+  let students: any[] = []
+
+  studentsInfo.forEach((student) => {
+    if (student.bh_days !== null) {
+      if (all || (student.cp_batch_year === year && student.cp_batch_month === month)) {
+        students.push(student)
+      }
+    }
+  })
+
+  return students
+
+}

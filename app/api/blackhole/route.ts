@@ -10,8 +10,8 @@ export async function GET(
   let year = 0;
   let month = 0;
   let all = true;
-  const yearStr: string = searchParams.get('batch_year')
-  const monthStr: string = searchParams.get('batch_month')
+  const yearStr: any = searchParams.get('batch_year')
+  const monthStr: any = searchParams.get('batch_month')
   if (yearStr !== null && monthStr !== null) {
     all = false;
     try {
