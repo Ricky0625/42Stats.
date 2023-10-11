@@ -7,7 +7,7 @@ import LineChartGraph from "@/components/graphs/LineChartGraph"
 import { Hash, LineChart, Link as LinkIcon, PersonStanding, User } from "lucide-react"
 import Link from 'next/link'
 import React from "react"
-import { MilestoneData } from "./MilestoneData"
+import { BatchAvgXpTimeline, MilestoneData } from "./MilestoneData"
 import { BatchData, StudentData } from "../blackhole/blackholeData"
 import { toast } from "@/components/ui/use-toast"
 import { MONTH } from "@/components/AvatarTooltip"
@@ -17,7 +17,7 @@ import MilestoneBatchForm from "@/components/MilestoneBatchForm"
 type MilestoneState = {
   login: string,
   setLogin: (login: string) => void
-  milestoneData: MilestoneData | any
+  milestoneData: MilestoneData | BatchCompare | any
   mode: string
   setMode: (mode: string) => void
   batches: BatchData[]
@@ -54,7 +54,7 @@ const StudentInfoCard = () => {
         <AvatarPic src={student.image} />
         <p className="truncate flex flex-row items-center"><User size={16} />&nbsp;<span className="font-black text-accent-foreground text-lg">{student.full_name}</span></p>
         <p className="truncate flex flex-row items-center"><LinkIcon size={16} />&nbsp;<span className="font-black text-accent-foreground text-lg"><Link href={`https://profile.intra.42.fr/users/${student.login}`} target="_blank">{student.login}</Link></span></p>
-        <p className="truncate flex flex-row items-center"><Hash size={16}/>&nbsp;<span className="font-black text-accent-foreground text-lg">{MONTH[student.cp_batch_month - 1]} {student.cp_batch_year}</span></p>
+        <p className="truncate flex flex-row items-center"><Hash size={16} />&nbsp;<span className="font-black text-accent-foreground text-lg">{MONTH[student.cp_batch_month - 1]} {student.cp_batch_year}</span></p>
       </div>
   )
 }
@@ -83,6 +83,102 @@ const optionsDef = {
   }
 }
 
+const studentVsBatch = (milestoneData: MilestoneData) => {
+  const { batch_avg_xp_timeline, student } = (milestoneData as MilestoneData);
+  const labels: string[] = []
+  const avgValues: object[] = []
+  const studValues: object[] = []
+  const datasets: object[] = []
+
+  if (batch_avg_xp_timeline === undefined || student === undefined) return;
+
+  const { xp_timeline } = student;
+
+  if (xp_timeline === undefined) return;
+
+  batch_avg_xp_timeline.forEach((data) => {
+    labels.push(data.date)
+    avgValues.push({
+      x: data.date,
+      y: data.xp
+    })
+  })
+
+  xp_timeline.forEach((data) => {
+    studValues.push({
+      x: data.date,
+      y: data.xp
+    })
+  })
+
+  datasets.push({
+    label: `${MONTH[student.cp_batch_month - 1]} ${student.cp_batch_year} Average Student XP Total`,
+    data: avgValues,
+    borderColor: '#6D28D9',
+    backgroundColor: '#6D28D9'
+  })
+
+  datasets.push({
+    label: `${student.login} XP Total`,
+    data: studValues,
+    borderColor: '#EA580C',
+    backgroundColor: '#EA580C'
+  })
+
+  return {
+    labels: labels,
+    datasets: datasets
+  }
+}
+
+type BatchCompare = {
+  batch1_avg_xp_timeline: BatchAvgXpTimeline[]
+  batch2_avg_xp_timeline: BatchAvgXpTimeline[]
+}
+
+const batchVsBatch = (milestoneData: MilestoneData) => {
+  const { batch1_avg_xp_timeline, batch2_avg_xp_timeline } = milestoneData as BatchCompare;
+  const labels: string[] = []
+  const batch1Values: object[] = []
+  const batch2Values: object[] = []
+  const datasets: object[] = []
+
+  if (batch1_avg_xp_timeline === undefined || batch2_avg_xp_timeline === undefined) return;
+
+  batch1_avg_xp_timeline.forEach((data) => {
+    batch1Values.push({
+      x: data.date,
+      y: data.xp
+    })
+  })
+
+  batch2_avg_xp_timeline.forEach((data) => {
+    batch2Values.push({
+      x: data.date,
+      y: data.xp
+    })
+  })
+
+  datasets.push({
+    label: `Batch A`,
+    data: batch1Values,
+    borderColor: '#6D28D9',
+    backgroundColor: '#6D28D9'
+  })
+
+  datasets.push({
+    label: `Batch B`,
+    data: batch2Values,
+    borderColor: '#EA580C',
+    backgroundColor: '#EA580C'
+  })
+
+  return {
+    labels: labels,
+    datasets: datasets
+  }
+}
+
 const ProgressGraph = () => {
 
   const milestoneCtx = React.useContext(MilestoneContext);
@@ -96,51 +192,92 @@ const ProgressGraph = () => {
   })
 
   React.useEffect(() => {
-    const { batch_avg_xp_timeline, student } = (milestoneData as MilestoneData);
-    const labels: string[] = []
-    const avgValues: object[] = []
-    const studValues: object[] = []
-    const datasets: object[] = []
+    if (milestoneCtx.mode === "Student") {
+      const { batch_avg_xp_timeline, student } = (milestoneData as MilestoneData);
+      const labels: string[] = []
+      const avgValues: object[] = []
+      const studValues: object[] = []
+      const datasets: object[] = []
 
-    if (batch_avg_xp_timeline === undefined || student === undefined) return;
+      if (batch_avg_xp_timeline === undefined || student === undefined) return;
 
-    const { xp_timeline } = student;
+      const { xp_timeline } = student;
 
-    if (xp_timeline === undefined) return;
+      if (xp_timeline === undefined) return;
 
-    batch_avg_xp_timeline.forEach((data) => {
-      labels.push(data.date)
-      avgValues.push({
-        x: data.date,
-        y: data.xp
+      batch_avg_xp_timeline.forEach((data) => {
+        labels.push(data.date)
+        avgValues.push({
+          x: data.date,
+          y: data.xp
+        })
       })
-    })
 
-    xp_timeline.forEach((data) => {
-      studValues.push({
-        x: data.date,
-        y: data.xp
+      xp_timeline.forEach((data) => {
+        studValues.push({
+          x: data.date,
+          y: data.xp
+        })
       })
-    })
 
-    datasets.push({
-      label: `${MONTH[student.cp_batch_month - 1]} ${student.cp_batch_year} Average Student XP Total`,
-      data: avgValues,
-      borderColor: '#6D28D9',
-      backgroundColor: '#6D28D9'
-    })
+      datasets.push({
+        label: `${MONTH[student.cp_batch_month - 1]} ${student.cp_batch_year} Average Student XP Total`,
+        data: avgValues,
+        borderColor: '#6D28D9',
+        backgroundColor: '#6D28D9'
+      })
 
-    datasets.push({
-      label: `${student.login} XP Total`,
-      data: studValues,
-      borderColor: '#EA580C',
-      backgroundColor: '#EA580C'
-    })
+      datasets.push({
+        label: `${student.login} XP Total`,
+        data: studValues,
+        borderColor: '#EA580C',
+        backgroundColor: '#EA580C'
+      })
+      setProgressData({
+        labels: labels,
+        datasets: datasets
+      });
+    } else if (milestoneCtx.mode === "Batch") {
+      const { batch1_avg_xp_timeline, batch2_avg_xp_timeline } = milestoneData as BatchCompare;
+      const labels: string[] = []
+      const batch1Values: object[] = []
+      const batch2Values: object[] = []
+      const datasets: object[] = []
 
-    setProgressData({
-      labels: labels,
-      datasets: datasets
-    })
+      if (batch1_avg_xp_timeline === undefined || batch2_avg_xp_timeline === undefined) return;
+
+      batch1_avg_xp_timeline.forEach((data) => {
+        batch1Values.push({
+          x: data.date,
+          y: data.xp
+        })
+      })
+
+      batch2_avg_xp_timeline.forEach((data) => {
+        batch2Values.push({
+          x: data.date,
+          y: data.xp
+        })
+      })
+
+      datasets.push({
+        label: `${MONTH[milestoneCtx.batches[0].month - 1]} ${milestoneCtx.batches[0].year}`,
+        data: batch1Values,
+        borderColor: '#6D28D9',
+        backgroundColor: '#6D28D9'
+      })
+
+      datasets.push({
+        label: `${MONTH[milestoneCtx.batches[1].month - 1]} ${milestoneCtx.batches[1].year}`,
+        data: batch2Values,
+        borderColor: '#EA580C',
+        backgroundColor: '#EA580C'
+      })
+      setProgressData({
+        labels: labels,
+        datasets: datasets
+      });
+    }
   }, [milestoneCtx])
 
   return (
@@ -175,7 +312,7 @@ const getStudentProgress = async (mode: string, login: string, batches: BatchDat
     URL = URL + `?comp_by=login&login=${login}`
   else
     URL = URL + `?comp_by=batch&batch_year1=${batches[0].year}&batch_year2=${batches[1].year}&batch_month1=${batches[0].month}&batch_month2=${batches[1].month}`
-  
+
   const res = await fetch(URL);
   const resJson = await res.json();
   return resJson;
@@ -208,8 +345,8 @@ export default function MileStone() {
   }, [login, batches])
 
   React.useEffect(() => {
-    console.log(batches);
-  }, [batches])
+    setMilestoneData({});
+  }, [mode])
 
   return (
     <MilestoneContext.Provider value={{
@@ -231,7 +368,7 @@ export default function MileStone() {
         </div>
         {
           login === ""
-            ? <p>Please select a student</p>
+            ? <p>Please select {mode === "Student" ? "a student" : "two batch"}</p>
             : <div className="m-auto pt-3 grid grid-cols-3 auto-rows-max gap-4">
               {
                 statCards.map((stat, i) => (

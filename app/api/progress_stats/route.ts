@@ -165,8 +165,16 @@ async function getProgressStatsByBatch(batchYear1: number, batchMonth1: number, 
   
   const batch1AvgXpTimeline = getBatchAvgXPTimeline(null, batch1Students)
   const batch2AvgXpTimeline = getBatchAvgXPTimeline(null, batch2Students)
-
   
+  if (Date.parse(batch1AvgXpTimeline[0].date) > Date.parse(batch2AvgXpTimeline[0].date)) {
+    batch1AvgXpTimeline.unshift(batch2AvgXpTimeline[0])
+    batch1AvgXpTimeline[0].xp = batch1AvgXpTimeline[1].xp
+    fillDateGaps(batch1AvgXpTimeline);
+  } else {
+    batch2AvgXpTimeline.unshift(batch1AvgXpTimeline[0])
+    batch2AvgXpTimeline[0].xp = batch2AvgXpTimeline[1].xp
+    fillDateGaps(batch2AvgXpTimeline);
+  }
 
   return {
     batch1_avg_xp_timeline: batch1AvgXpTimeline,
