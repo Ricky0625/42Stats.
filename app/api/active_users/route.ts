@@ -1,13 +1,13 @@
 import { NextRequest, NextResponse } from "next/server";
 import { getAccessToken, getStudentsInfo } from "@/app/api/utils";
 
-async function getActiveUsersByBatch(activeUsersInfo: Object[], year: number, month: number, all: boolean) {
+async function getActiveUsersByBatch(activeUsersInfo: any[], year: number | null, month: number | null) {
   const allStudentsInfo = await getStudentsInfo()
-  const studentsInfo = allStudentsInfo.filter(student => activeUsersInfo.find(info => student.login === info.login))
-  let activeUsers: Object[] = []
+  const studentsInfo = allStudentsInfo.filter((student: any) => activeUsersInfo.find(info => student.login === info.login))
+  let activeUsers: any[] = []
 
-  studentsInfo.forEach((student) => {
-    if (all || (student.cp_batch_year === year && student.cp_batch_month === month)) {
+  studentsInfo.forEach((student: any) => {
+    if ((year === null && month === null) || (student.cp_batch_year === year && student.cp_batch_month === month)) {
       activeUsers.push({
         login: student.login,
         location: activeUsersInfo.find(info => info.login === student.login).location,
@@ -30,29 +30,29 @@ export async function GET(
   req: NextRequest,
 ) {
   const searchParams = req.nextUrl.searchParams
-  let year = 0;
-  let month = 0;
-  let all = true;
-  const yearStr: string = searchParams.get('batch_year')
-  const monthStr: string = searchParams.get('batch_month')
+  let year: number | null = null;
+  let month: number | null = null;
+  const yearStr: string | null = searchParams.get('batch_year')
+  const monthStr: string | null = searchParams.get('batch_month')
   if (yearStr !== null && monthStr !== null) {
-    all = false;
-    try {
-      year = parseInt(yearStr)
-      month = parseInt(monthStr)
-    } catch (err) {
-      NextResponse.json({'error': 'Invalid params'}, { status: 400 })
+    year = parseInt(yearStr)
+    if (year !== year) {
+      NextResponse.json({'error': 'Invalid param batch_year'}, { status: 400 })
+    }
+    month = parseInt(monthStr)
+    if (month !== month) {
+      NextResponse.json({'error': 'Invalid param batch_month'}, { status: 400 })
     }
   }
 
   const accessToken = await getAccessToken()
   let page = 1;
   let all42KLStudents = await fetch(`https://api.intra.42.fr/v2/locations?filter[active]=true&filter[campus_id]=34&page[size]=100&page[number]=${page}&access_token=${accessToken}`)
-  let resJson: Object[] = await all42KLStudents.json()
-  let activeUsersLogin: Object[] = []
+  let resJson: any[] = await all42KLStudents.json()
+  let activeUsersLogin: any[] = []
   
   while (resJson.length !== 0) {
-    resJson.forEach(info => {
+    resJson.forEach((info: any) => {
       activeUsersLogin.push({login: info.user.login, location: info.host})
     })
     page++;
@@ -60,7 +60,7 @@ export async function GET(
     resJson = await all42KLStudents.json()
   }
 
-  const activeUsers = await getActiveUsersByBatch(activeUsersLogin, year, month, all);
+  const activeUsers = await getActiveUsersByBatch(activeUsersLogin, year, month);
 
   return NextResponse.json(activeUsers, { status: 200 });
 }
