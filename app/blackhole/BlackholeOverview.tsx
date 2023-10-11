@@ -2,7 +2,7 @@ import CardDiv from "@/components/CardDiv"
 import TextBasedContent, { TextState } from "@/components/TextBasedContent"
 import { Laugh, AlertTriangle, Skull, Orbit, LandPlot, ThumbsUp } from "lucide-react"
 import React, { Suspense } from "react";
-import { UserData } from "./blackholeData";
+import { StudentData } from "./blackholeData";
 import Ranking from "@/components/Ranking";
 import Loading from "../loading";
 import { ScrollArea } from "@/components/ui/scroll-area";
@@ -20,9 +20,9 @@ const BlackholeStatContent = ({
   const [value, setValue] = React.useState(0);
 
   const filterFunc = {
-    "ok": (user: UserData) => user.bh_days >= mbhd,
-    "warning": (user: UserData) => user.bh_days < mbhd && user.bh_days >= 0,
-    "destructive": (user: UserData) => user.bh_days < 0,
+    "ok": (user: StudentData) => user.bh_days >= mbhd,
+    "warning": (user: StudentData) => user.bh_days < mbhd && user.bh_days >= 0,
+    "destructive": (user: StudentData) => user.bh_days < 0,
   }
 
   React.useEffect(() => {
@@ -39,12 +39,12 @@ const BlackholeStatContent = ({
 const ZoneViewer = () => {
 
   const { data, mbhd, viewState } = React.useContext(BlackholeContext);
-  const [users, setUsers] = React.useState<UserData[]>([])
+  const [users, setUsers] = React.useState<StudentData[]>([])
 
   const filterFunc = {
-    "ok": (user: UserData) => user.bh_days >= mbhd,
-    "warning": (user: UserData) => user.bh_days < mbhd && user.bh_days >= 0,
-    "destructive": (user: UserData) => user.bh_days < 0,
+    "ok": (user: StudentData) => user.bh_days >= mbhd,
+    "warning": (user: StudentData) => user.bh_days < mbhd && user.bh_days >= 0,
+    "destructive": (user: StudentData) => user.bh_days < 0,
   }
 
   React.useEffect(() => {
@@ -73,7 +73,7 @@ const ZoneViewer = () => {
 const BlackholeUsers = () => {
 
   const { data } = React.useContext(BlackholeContext);
-  const [toppers, setToppers] = React.useState<UserData[]>([])
+  const [toppers, setToppers] = React.useState<StudentData[]>([])
 
   React.useEffect(() => {
     const top10 = data.filter((user) => user.bh_days >= 0).sort((userA, userB) => (userA.bh_days - userB.bh_days)).slice(0, 10)

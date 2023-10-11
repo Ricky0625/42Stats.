@@ -10,6 +10,7 @@ import {
   Legend,
 } from 'chart.js';
 import { Line } from 'react-chartjs-2';
+import { GraphProps } from './GraphData';
 
 ChartJS.register(
   CategoryScale,
@@ -21,13 +22,7 @@ ChartJS.register(
   Legend
 );
 
-const LineChartGraph = ({
-  options = {},
-  data
-}: {
-  options?: object
-  data: any
-}) => {
+const LineChartGraph = ({ options = {}, data }: GraphProps) => {
   return <Line options={options} data={data} />;
 }
 

@@ -13,7 +13,7 @@ const AvatarWithHoverCard = ({
   content,
   col = true,
 }: {
-  src: string,
+  src: string | undefined,
   name: string,
   intraName: string,
   content: React.ReactNode,
