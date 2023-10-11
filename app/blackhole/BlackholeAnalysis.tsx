@@ -297,7 +297,7 @@ const statCards = [
     description: undefined,
     icon: <Swords size={20} />,
     content: <ProjectCasualties />,
-    className: `lg:col-span-3`
+    className: `col-span-2 lg:col-span-3`
   }
 ]
 

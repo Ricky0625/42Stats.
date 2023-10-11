@@ -22,6 +22,10 @@ const routes = [
     href: "/blackhole",
     label: "Blackhole"
   },
+  {
+    href: "/milestone",
+    label: "Milestone Monitor"
+  }
 ]
 
 const Logo = () => {
