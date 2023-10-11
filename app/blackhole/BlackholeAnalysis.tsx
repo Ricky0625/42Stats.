@@ -89,8 +89,8 @@ const EndLevelBarChart = () => {
     datasets.push({
       label: "Count",
       data: dataValues,
-      borderColor: '#22C55E',
-      backgroundColor: '#22C55E'
+      borderColor: '#6D28D9',
+      backgroundColor: '#6D28D9'
     })
 
     setEndLevelData({
