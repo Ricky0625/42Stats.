@@ -141,6 +141,10 @@ async function getProgressStatsByLogin(login: string) {
   
   progress.batch_avg_xp_timeline = getBatchAvgXPTimeline(student, sameBatchStudents)
 
+  if (sameBatchStudents.length === 0 || ! progress.batch_avg_xp_timeline.length === 0) {
+    return progress
+  }
+
   if (Date.parse(student.xp_timeline[student.xp_timeline.length - 1].date) < Date.parse(progress.batch_avg_xp_timeline[progress.batch_avg_xp_timeline.length - 1].date)) {
     student.xp_timeline.push(JSON.parse(JSON.stringify(progress.batch_avg_xp_timeline[progress.batch_avg_xp_timeline.length - 1])))
     student.xp_timeline[student.xp_timeline.length - 1].xp = student.xp_timeline[student.xp_timeline.length - 2].xp
@@ -177,6 +181,13 @@ async function getProgressStatsByBatch(batchYear1: number, batchMonth1: number, 
   
   const batch1AvgXpTimeline = getBatchAvgXPTimeline(null, batch1Students)
   const batch2AvgXpTimeline = getBatchAvgXPTimeline(null, batch2Students)
+
+  if (batch1AvgXpTimeline.length === 0 || batch2AvgXpTimeline.length === 0) {
+    return {
+      batch1_avg_xp_timeline: batch1AvgXpTimeline,
+      batch2_avg_xp_timeline: batch2AvgXpTimeline
+    }
+  }
   
   if (Date.parse(batch1AvgXpTimeline[0].date) > Date.parse(batch2AvgXpTimeline[0].date)) {
     batch1AvgXpTimeline.unshift(JSON.parse(JSON.stringify(batch2AvgXpTimeline[0])))
@@ -262,6 +273,7 @@ export async function GET(
       }
       return NextResponse.json(batchsProgress, { status: 200 });
     } catch (err) {
+      console.log(err)
       return NextResponse.json({error: 'Invalid login'}, { status: 400 })
     }
   } else {
