@@ -126,6 +126,7 @@ async function getProgressStatsByLogin(login: string) {
       error: 'Student does not have any progress yet!'
     }
   }
+
   student.xp_timeline = getStudentXpTimeline(student)
 
   let progress: any = {
@@ -139,6 +140,12 @@ async function getProgressStatsByLogin(login: string) {
   });
   
   progress.batch_avg_xp_timeline = getBatchAvgXPTimeline(student, sameBatchStudents)
+
+  if (Date.parse(student.xp_timeline[student.xp_timeline.length - 1].date) < Date.parse(progress.batch_avg_xp_timeline[progress.batch_avg_xp_timeline.length - 1].date)) {
+    student.xp_timeline.push(JSON.parse(JSON.stringify(progress.batch_avg_xp_timeline[progress.batch_avg_xp_timeline.length - 1])))
+    student.xp_timeline[student.xp_timeline.length - 1].xp = student.xp_timeline[student.xp_timeline.length - 2].xp
+    fillDateGaps(student.xp_timeline);
+  }
   
 
   return progress
@@ -167,14 +174,26 @@ async function getProgressStatsByBatch(batchYear1: number, batchMonth1: number, 
   const batch2AvgXpTimeline = getBatchAvgXPTimeline(null, batch2Students)
   
   if (Date.parse(batch1AvgXpTimeline[0].date) > Date.parse(batch2AvgXpTimeline[0].date)) {
-    batch1AvgXpTimeline.unshift(batch2AvgXpTimeline[0])
+    batch1AvgXpTimeline.unshift(JSON.parse(JSON.stringify(batch2AvgXpTimeline[0])))
     batch1AvgXpTimeline[0].xp = batch1AvgXpTimeline[1].xp
     fillDateGaps(batch1AvgXpTimeline);
   } else {
-    batch2AvgXpTimeline.unshift(batch1AvgXpTimeline[0])
+    batch2AvgXpTimeline.unshift(JSON.parse(JSON.stringify(batch1AvgXpTimeline[0])))
     batch2AvgXpTimeline[0].xp = batch2AvgXpTimeline[1].xp
     fillDateGaps(batch2AvgXpTimeline);
   }
+
+  if (Date.parse(batch1AvgXpTimeline[batch1AvgXpTimeline.length - 1].date) < Date.parse(batch2AvgXpTimeline[batch2AvgXpTimeline.length - 1].date)) {
+    batch1AvgXpTimeline.push(JSON.parse(JSON.stringify(batch2AvgXpTimeline[batch2AvgXpTimeline.length - 1])))
+    batch1AvgXpTimeline[batch1AvgXpTimeline.length - 1].xp = batch1AvgXpTimeline[batch1AvgXpTimeline.length - 2].xp
+    fillDateGaps(batch1AvgXpTimeline);
+  } else {
+    batch2AvgXpTimeline.push(JSON.parse(JSON.stringify(batch1AvgXpTimeline[batch1AvgXpTimeline.length - 1])))
+    batch2AvgXpTimeline[batch2AvgXpTimeline.length - 1].xp = batch2AvgXpTimeline[batch2AvgXpTimeline.length - 2].xp
+    fillDateGaps(batch2AvgXpTimeline);
+  }
+
+
 
   return {
     batch1_avg_xp_timeline: batch1AvgXpTimeline,
