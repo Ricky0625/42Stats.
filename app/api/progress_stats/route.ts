@@ -147,6 +147,11 @@ async function getProgressStatsByLogin(login: string) {
     fillDateGaps(student.xp_timeline);
   }
   
+  if (Date.parse(student.xp_timeline[0].date) > Date.parse(progress.batch_avg_xp_timeline[0].date)) {
+    student.xp_timeline.unshift(JSON.parse(JSON.stringify(progress.batch_avg_xp_timeline[0])))
+    // student.xp_timeline[0].xp = student.xp_timeline[1].xp
+    fillDateGaps(student.xp_timeline);
+  }
 
   return progress
 }
