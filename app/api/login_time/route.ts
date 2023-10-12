@@ -39,7 +39,7 @@ export async function GET(
   const endTime = getNDaysAgoDate(0)
   let allLoginSessions = await fetch(`https://api.intra.42.fr/v2/campus/34/locations?page[size]=100&page[number]=${page}&range[begin_at]=${beginTime},${endTime}&access_token=${accessToken}`)
   if (!allLoginSessions.ok) {
-    return NextResponse.json({'error': 'Error'}, { status: 400 });
+    return NextResponse.json({error: 'Error'}, { status: 400 });
   }
   let loginSessionsJson: any[] = await allLoginSessions.json()
   let usersLoginTime: any[] = []
