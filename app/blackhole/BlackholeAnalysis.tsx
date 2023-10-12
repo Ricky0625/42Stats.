@@ -269,14 +269,14 @@ const statCards = [
     description: undefined,
     icon: <Skull size={20} />,
     content: <DeadlistProject />,
-    className: `col-span-1`
+    className: `col-span-2 md:col-span-1`
   },
   {
     title: "Blackhole Spawn-Kills",
     description: undefined,
     icon: <Sword size={20} />,
     content: <SpawnKill />,
-    className: `col-span-1`
+    className: `col-span-2 md:col-span-1`
   },
   {
     title: "Count of Cadets by End Level before Blackhole",
@@ -297,7 +297,7 @@ const statCards = [
     description: undefined,
     icon: <Swords size={20} />,
     content: <ProjectCasualties />,
-    className: `col-span-2 lg:col-span-3`
+    className: `col-span-2 sm:col-span-1 lg:col-span-3`
   }
 ]
 
